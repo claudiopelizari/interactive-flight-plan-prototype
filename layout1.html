@@ -64,9 +64,86 @@
                 <!-- top right -->
                 <div class="inner">
                     <header>
-                        <p><span></span>Top Right</p>
+                        <p><span></span>PRMF</p>
                     </header>
+
+                    <div class="content">
+                        <div id="cf-rag-1" class="cf-rag">
+
+                            <div class="cf-figs ">
+                                <ul>
+                                    <li>
+                                        <div class="cf-figs-fig m-red">
+                                            <p>40%</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="cf-figs-fig m-amber">
+                                            <p>50%</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="cf-figs-fig m-green">
+                                            <p>10%</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="cf-figs-fig m-green">
+                                            <p>10%</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="cf-txts ">
+                                <ul>
+                                    <li>
+                                        <div class="cf-txts-txt m-red">
+                                            <p>Red</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="cf-txts-txt m-amber">
+                                            <p>Amber</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="cf-txts-txt m-green">
+                                            <p>Green</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="cf-txts-txt m-green">
+                                            <p>Green</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="cf-figs-fig m-green">
+                                            <p>10%</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--<div class="cf-bars">-->
+                                <!--<ul>-->
+                                    <!--<li style="height: 25%">-->
+                                        <!--<div class="cf-bars-bar m-red mb"></div>-->
+                                    <!--</li>-->
+                                    <!--<li style="height: 25%">-->
+                                        <!--<div class="cf-bars-bar m-amber mb"></div>-->
+                                    <!--</li>-->
+                                    <!--<li style="height: 25%">-->
+                                        <!--<div class="cf-bars-bar m-green mb"></div>-->
+                                    <!--</li>-->
+                                    <!--<li style="height: 25%">-->
+                                        <!--<div class="cf-bars-bar m-green mb"></div>-->
+                                    <!--</li>-->
+                                <!--</ul>-->
+                            <!--</div>-->
+                        </div>
+                    </div>
+
                 </div> <!-- //end inner -->
+
             </div>
 
         </div>
@@ -98,7 +175,31 @@
     $("#asset1Slider").on('slide', function(slideEvt) {
         $("#asset1Value").text(slideEvt.value);
     });
-</script>
+
+        fp.ViewModel = function(){
+            var self = this;
+
+            self.controlPanel = {
+
+            };
+
+            self.prmf = {
+
+            };
+
+            self.risk = {
+
+            };
+
+            self.flightPlan = {
+
+            };
+        };
+
+        var vm = new fp.ViewModel();
+        ko.applyBindings(vm);
+
+    </script>
 
 </body>
 </html>
