@@ -18,7 +18,11 @@
 	<script src="js/jquery.sparklines.js"></script>			
     <script src="js/bootstrap.js"></script>
     <script src="js/controlfrog-plugins.js"></script>
-    
+
+    <!-- slider -->
+    <link href="slider/css/slider.css" rel="stylesheet" />
+    <script src="slider/js/bootstrap-slider.js"></script>
+
     <!--[if lt IE 9]>
 		<script src="js/respond.min.js"></script>
 		<script src="js/excanvas.min.js"></script>
@@ -42,6 +46,18 @@
                         <p><span></span>Top Left</p>
                     </header>
                 </div> <!-- //end inner -->
+                <div class="content">
+                    <div class="cf-td">
+                        Asset Allocation
+                        <div class="row">
+                            <div class="col-sm-3">Asset 1 </div>
+                            <div class="col-sm-3"><span id="asset1Value"></span></div>
+                            <div class="col-sm-6">
+                                <input id="asset1Slider" type="text" data-slider-min="0" data-slider-max="300" data-slider-step="10" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="col-sm-6 cf-item">
@@ -77,6 +93,13 @@
         </div>
     </div>
 
+<script>
+    $("#asset1Slider").slider();
+    $("#asset1Slider").on('slide', function(slideEvt) {
+        $("#asset1Value").text(slideEvt.value);
+    });
+</script>
 
 </body>
 </html>
+
