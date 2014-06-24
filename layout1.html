@@ -48,9 +48,85 @@
                 <!-- top right -->
                 <div class="inner">
                     <header>
-                        <p><span></span>Top Right</p>
+                        <p><span></span>PRMF</p>
                     </header>
+
+                    <div class="content">
+                        <div id="cf-rag-1" class="cf-rag">
+
+                            <div class="cf-txts ">
+                                <ul>
+                                    <li>
+                                        <div class="cf-txts-txt m-red">
+                                            <p>Return</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="cf-txts-txt m-amber">
+                                            <p>Risk</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="cf-txts-txt m-green">
+                                            <p>Collateral</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="cf-txts-txt m-green">
+                                            <p>Hedge</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="cf-figs ">
+                                <ul>
+                                    <li>
+                                        <div class="cf-figs-fig m-red">
+                                            <p>56 bps</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="cf-figs-fig m-amber">
+                                            <p>£244m</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="cf-figs-fig m-green">
+                                            <p>£444m</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="cf-figs-fig m-green">
+                                            <p>95.5%</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="cf-bars">
+                                <ul>
+                                    <li style="height: 25%">
+                                        <div class="cf-bars-bar m-red mb"></div>
+                                    </li>
+                                    <li style="height: 25%">
+                                        <div class="cf-bars-bar m-amber mb"></div>
+                                    </li>
+                                    <li style="height: 25%">
+                                        <div class="cf-bars-bar m-green mb">
+                                            <i class="glyphicon glyphicon-ok"></i>
+                                        </div>
+                                    </li>
+                                    <li style="height: 25%">
+                                        <div class="cf-bars-bar m-green mb"></div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
                 </div> <!-- //end inner -->
+
             </div>
 
         </div>
@@ -77,6 +153,37 @@
         </div>
     </div>
 
+
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/knockout/3.1.0/knockout-min.js"></script>
+
+    <script>
+
+        var fp = fp || {};
+
+        fp.ViewModel = function(){
+            var self = this;
+
+            self.controlPanel = {
+
+            };
+
+            self.prmf = {
+
+            };
+
+            self.risk = {
+
+            };
+
+            self.flightPlan = {
+
+            };
+        };
+
+        var vm = new fp.ViewModel();
+        ko.applyBindings(vm);
+
+    </script>
 
 </body>
 </html>
