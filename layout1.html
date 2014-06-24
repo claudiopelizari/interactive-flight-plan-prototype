@@ -204,7 +204,9 @@
     <script src="http://code.highcharts.com/highcharts-more.js"></script>
 
     <script src="http://cdnjs.cloudflare.com/ajax/libs/knockout/3.1.0/knockout-min.js"></script>
+    <script src="js/flot.js"></script>
     <script src="js/app/services/chartHelper.js"></script>
+    <script src="js/app/services/flotChartWrapper.js"></script>
 
     <script>
 
@@ -443,9 +445,9 @@
             var self = this;
 
             if (!dependencies) dependencies = {};
-            self.chartWrapper = dependencies.chartWrapper || new lineChartWrapper();
+            self.chartWrapper = dependencies.chartWrapper || new FlotChartWrapper();
 
-            self.chartData = ko.observableArray();
+            self.chartData = ko.observableArray([]);
 
             var seriesData = [
                 { data: [], label: 'Liabilities' },
@@ -466,22 +468,21 @@
             }
 
             self.displayChart = ko.computed(function () {
+                if (self.chartData().length === 0) return;
 
-                ko.utils.arrayForEach(self.chartData, function (item) {
+                ko.utils.arrayForEach(self.chartData(), function (item) {
                     if (item[0] !== 'Date') {
                         var stamp = moment.utc(item[0]);
                         if (stamp != undefined) {
-                            var l = [stamp.unix() * 1000 + 1000, me.inMillions(parseInt(item[1]))]; // liabilities
-                            var a = [stamp.unix() * 1000 + 1000, me.inMillions(parseInt(item[2]))]; // assets
+                            var l = [stamp.unix() * 1000 + 1000, inMillions(parseInt(item[1]))]; // liabilities
+                            var a = [stamp.unix() * 1000 + 1000, inMillions(parseInt(item[2]))]; // assets
                             seriesData[0].data.push(l);
                             seriesData[1].data.push(a)
                         }
                     }
                 });
 
-                //self.chartWrapper.displayFlightPlanChart(options);
-                //me.flightPlanChart = new LineChart(options);
-                //me.flightPlanChart.display();
+                self.chartWrapper.displayLineChart(options);
             });
         };
         
@@ -509,13 +510,13 @@
             };
 
             self.flightPlan = {
-                //flightPlanModel: new fp.FlightPlanModel(new lineChartWrapper())
+                flightPlanModel: new fp.FlightPlanModel({ chartWrapper: new FlotChartWrapper() })
             };
         };
 
         var vm = new fp.ViewModel();
         vm.risk.riskModel.chartData(fp.riskData);
-        //vm.flightPlan.chartData(fp.flightPlanData);
+        vm.flightPlan.flightPlanModel.chartData(fp.flightPlanData);
         ko.applyBindings(vm);
 
     </script>

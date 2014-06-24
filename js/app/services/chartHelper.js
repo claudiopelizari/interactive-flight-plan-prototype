@@ -23,7 +23,7 @@ var irisHighChartWrapper = function() {
                     text: options.yAxisTitle || ""
                 },
                 gridLineDashStyle: 'dash',
-                gridLineWidth: 1,
+                gridLineWidth: 1
             }],
 
             legend: {
