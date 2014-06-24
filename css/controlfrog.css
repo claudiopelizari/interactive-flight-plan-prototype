@@ -623,7 +623,7 @@ body.white {
     .cf-rag .cf-bars li,
     .cf-rag .cf-figs li,
     .cf-rag .cf-txts li {
-      height: 33%; }
+      height: 25%; }
       .cf-rag .cf-bars li div,
       .cf-rag .cf-figs li div,
       .cf-rag .cf-txts li div {
@@ -749,7 +749,7 @@ body.white {
     font-size: 3.5em; }
 
   .col-sm-6 .cf-figs-fig {
-    font-size: 6em; }
+    font-size: 4em; }
   .col-sm-6 .cf-txts-txt {
     font-size: 2em; }
   .col-sm-6 .col-sm-4 .cf-figs-fig {
