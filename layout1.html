@@ -146,18 +146,24 @@
                             <div class="cf-bars">
                                 <ul>
                                     <li>
-                                        <div class="cf-bars-bar m-red mb prmf-status"></div>
-                                    </li>
-                                    <li>
-                                        <div class="cf-bars-bar m-amber mb prmf-status"></div>
-                                    </li>
-                                    <li>
-                                        <div class="cf-bars-bar m-green mb prmf-status">
-                                            <span class="glyphicon glyphicon-ok prmf-icon"></span>
+                                        <div class="cf-bars-bar m-red mb prmf-status">
+                                            <span class="glyphicon glyphicon-exclamation-sign prmf-icon"></span>
                                         </div>
                                     </li>
                                     <li>
-                                        <div class="cf-bars-bar m-green mb prmf-status"></div>
+                                        <div class="cf-bars-bar m-amber mb prmf-status">
+                                            <span class="glyphicon glyphicon-minus-sign prmf-icon"></span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="cf-bars-bar m-green mb prmf-status">
+                                            <span class="glyphicon glyphicon-ok-sign prmf-icon"></span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="cf-bars-bar m-green mb prmf-status">
+                                            <span class="glyphicon glyphicon-ok-sign prmf-icon"></span>
+                                        </div>
                                     </li>
                                 </ul>
                             </div>
@@ -245,26 +251,14 @@
                 $(element).slider('setValue', valueObservable());
             }
         };
-
+        
         var fp = fp || {};
 
         fp.RiskModel = function (dependencies) {
             var self = this;
 
             self.colours = ["#bdea74", "#eae874", "#2FABE9", "#FA5833"];
-
-//        self.organisationId = ko.observable(Risk.ORGID);
-//        self.reportId = ko.observable();
-//        self.noData = ko.observable(false);
-//        self.debug = ko.observable('');
-//        self.title = ko.observable('');
-//        self.body = ko.observable('');
             self.chartData = ko.observableArray([]);
-//        self.tableTitle = ko.observable('');
-//        self.maxCols = ko.observable(20);
-//        self.skip = ko.observable(1);
-//        self.fixedCols = ko.observable(0);
-//        self.moduleName = ko.observable();
             self.riskTableOriginal = ko.observableArray([]);
             self.chartYAxisTitle = ko.observable('Percentage of Total Liabilities');
 
@@ -283,7 +277,7 @@
 
 
             self.waterfallData = ko.computed(function () {
-                var colours = ["#D94542", "#578BCA", "#819E43", "#B0C9F5", "#9EDAEB"];
+                //var colours = ["#D94542", "#578BCA", "#819E43", "#B0C9F5", "#9EDAEB"];
                 var colourIndex = -1;
                 var currentCategory = "";
                 var result = [];
@@ -308,14 +302,17 @@
                         if (data[0] === "Diversification") {
                             diversificationFound = true;
                             var y1 = parseFloat(y.toFixed(1)) - (parseFloat(y.toFixed(2)) * 2);
-                            result.push({ name: data[0], y: y1, color: colours[colourIndex] });
+                            //result.push({ name: data[0], y: y1, color: colours[colourIndex] });
+                            result.push({ name: data[0], y: y1 });
                         } else {
-                            result.push({ name: data[0], y: parseFloat(y.toFixed(2)), color: colours[colourIndex] });
+                            //result.push({ name: data[0], y: parseFloat(y.toFixed(2)), color: colours[colourIndex] });
+                            result.push({ name: data[0], y: parseFloat(y.toFixed(2)) });
                         }
                     }
                 });
 
-                result.push({ name: 'Total', y: 0, color: colours[colourIndex += 1] });
+                //result.push({ name: 'Total', y: 0, color: colours[colourIndex += 1] });
+                result.push({ name: 'Total', y: 0 });
 
                 return result;
             });
@@ -356,89 +353,7 @@
                 };
 
                 self.chartWrapper.displayWaterfallChart(options);
-
             });
-
-//        self.getRiskTableTitles = function () {
-//            if (self.riskTableOriginal().length == 0) return "";
-//            if (self.matrix === undefined) return [];
-//            var titles = self.matrix.getFilteredTitles();
-//            if (titles.length > 0) titles[0].title = "";
-//            return titles;
-//        };
-//
-//        self.tableTitles = ko.computed(function () {
-//            return self.getRiskTableTitles();
-//        });
-
-//        self.getTableTitle = function () {
-//            if (self.riskTableOriginal().length === 0) return "";
-//            var sourceTitles = self.riskTableOriginal()[0].slice(0);
-//            sourceTitles.shift(); // Shift off the date column
-//            return sourceTitles[0];
-//        };
-
-//        self.tableTitle = ko.computed(function () {
-//            return self.getTableTitle();
-//        });//.extend({ throttle: 1 });
-
-//        self.getAsAt = function () {
-//            if (self.riskTableOriginal() === undefined) return "";
-//            if (self.riskTableOriginal().length == 0) return "";
-//            return self.riskTableOriginal()[1][0];
-//        };
-//
-//        self.asAt = ko.computed(function () {
-//            return self.getAsAt();
-//        });//.extend({ throttle: 1 });
-
-//        self.init = function (moduleName, queryName, reportId) {
-//            if (reportId === "00000000-0000-0000-0000-000000000000") {
-//                self.noData(true);
-//                return;
-//            }
-//            self.moduleName(moduleName);
-//            self.reportId(reportId);
-//            self.getReportData(queryName, moduleName);
-//        };
-
-
-
-//        self.getReportData = function (queryName, moduleName) {
-//            ajaxService.callMaster(queryName, self, function (reportSuccess) {
-//
-//                var localTableData = [];
-//
-//                if (moduleName === "FRAR") {
-//                    localTableData = JSON.parse(reportSuccess.Data.FRARDetail);
-//                    self.chartData(JSON.parse(reportSuccess.Data.FRARChart));
-//
-//                }else if (moduleName === "RRAR") {
-//                    localTableData = JSON.parse(reportSuccess.Data.RRARDetail);
-//                    self.chartData(JSON.parse(reportSuccess.Data.RRARChart));
-//                    self.chartYAxisTitle("Percentage");
-//
-//                } else {
-//                    localTableData = JSON.parse(reportSuccess.Data.VarDetail);
-//                    self.chartData(JSON.parse(reportSuccess.Data.VarChart));
-//                }
-//                self.title(reportSuccess.Data.Title);
-//                self.body(reportSuccess.Data.Body);
-//
-//                self.matrix.init(localTableData, self.options);
-//
-//                self.riskTableOriginal(localTableData);
-//
-//            }, function (reportFail) {
-//                self.noData(true);
-//                return;
-//            });
-//        };
-
-
-//        self.AjaxCallSettings = [
-//            { "Name": "GetLiveReportsByOrganisation", "Fields": [{ "OrganisationId": "organisationId" }] }
-//        ];
         };
 
         fp.FlightPlanModel = function (dependencies) {
