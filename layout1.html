@@ -18,11 +18,12 @@
 	<script src="js/jquery.sparklines.js"></script>			
     <script src="js/bootstrap.js"></script>
     <script src="js/controlfrog-plugins.js"></script>
+    <script src="js/modernizr-dev.js"></script>
 
     <!-- slider -->
     <link href="slider/css/slider.css" rel="stylesheet" />
     <script src="slider/js/bootstrap-slider.js"></script>
-    <script src="js/modernizr-dev.js"></script>
+
 
     <!--[if lt IE 9]>
 		<script src="js/respond.min.js"></script>
@@ -184,8 +185,12 @@
                 <!-- bottom right -->
                 <div class="inner">
                     <header>
-                        <p><span></span>Bottom Right</p>
+                        <p><span></span>Flight Plan</p>
                     </header>
+
+                    <div class="content">
+                        <div id="flightPlan" style="height: 400px"></div>
+                    </div>
                 </div> <!-- //end inner -->
             </div>
 
@@ -235,6 +240,54 @@
 
         var fp = fp || {};
 
+        fp.FlightPlanModel = function (dependencies) {
+            var self = this;
+
+            if (!dependencies) dependencies = {};
+            self.chartWrapper = dependencies.chartWrapper || new lineChartWrapper();
+
+            self.chartData = ko.observableArray();
+
+            var seriesData = [
+                { data: [], label: 'Liabilities' },
+                { data: [], label: 'Assets' }
+            ];
+
+            var options = {
+                id: "#flightPlan",
+                seriesData: seriesData,
+                colours: ["#2FABE9", "#FA5833"],
+                yLabel: "GBP Millions",
+                xLabel: "Date"
+            };
+
+            var inMillions = function (num) {
+                var result = Math.round(num / 1000000);
+                return result;
+            }
+
+            self.displayChart = ko.computed(function () {
+
+                ko.utils.arrayForEach(self.chartData, function (item) {
+                    if (item[0] !== 'Date') {
+                        var stamp = moment.utc(item[0]);
+                        if (stamp != undefined) {
+                            var l = [stamp.unix() * 1000 + 1000, me.inMillions(parseInt(item[1]))]; // liabilities
+                            var a = [stamp.unix() * 1000 + 1000, me.inMillions(parseInt(item[2]))]; // assets
+                            seriesData[0].data.push(l);
+                            seriesData[1].data.push(a)
+                        }
+                    }
+                });
+
+                //self.chartWrapper.displayFlightPlanChart(options);
+                //me.flightPlanChart = new LineChart(options);
+                //me.flightPlanChart.display();
+            });
+        };
+
+        fp.flightPlanData = [["Date","GF Asset (Gilts +177bps)","GF Liability (Gilt flat)",null,null],["28 June 2013","1419816589","1824449370",null,null],["30 September 2013","1416916182","1818554559",null,null],["30 June 2014","1412647751","1793890195",null,null],["30 June 2015","1417703004","1769838176",null,null],["30 June 2016","1429176417","1754250356",null,null],["30 June 2017","1453465547","1754488164",null,null],["30 June 2018","1482378990","1759952119",null,null],["30 June 2019","1513284499","1767020958",null,null],["30 June 2020","1542372293","1778332423",null,null],["30 June 2021","1578037371","1796684312",null,null],["30 June 2022","1619577242","1820908259",null,null],["30 June 2023","1659350486","1841652201",null,null],["30 June 2024","1682379988","1842430887",null,null],["30 June 2025","1699311422","1835617536",null,null],["30 June 2026","1715221123","1826781602",null,null],["30 June 2027","1732560717","1818281248",null,null],["30 June 2028","1749060877","1807627789",null,null],["30 June 2029","1762273714","1792263917",null,null],["30 June 2030","1774795214","1774795214",null,null]];
+
         fp.ViewModel = function () {
             var self = this;
 
@@ -254,11 +307,12 @@
             };
 
             self.flightPlan = {
-
+                //flightPlanModel: new fp.FlightPlanModel(new lineChartWrapper())
             };
         };
 
         var vm = new fp.ViewModel();
+        //vm.flightPlan.chartData(fp.flightPlanData);
         ko.applyBindings(vm);
 
     </script>
