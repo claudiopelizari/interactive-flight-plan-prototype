@@ -18,7 +18,12 @@
 	<script src="js/jquery.sparklines.js"></script>			
     <script src="js/bootstrap.js"></script>
     <script src="js/controlfrog-plugins.js"></script>
-    
+
+    <!-- slider -->
+    <link href="slider/css/slider.css" rel="stylesheet" />
+    <script src="slider/js/bootstrap-slider.js"></script>
+    <script src="js/modernizr-dev.js"></script>
+
     <!--[if lt IE 9]>
 		<script src="js/respond.min.js"></script>
 		<script src="js/excanvas.min.js"></script>
@@ -39,8 +44,42 @@
                 <!-- top left -->
                 <div class="inner">
                     <header>
-                        <p><span></span>Top Left</p>
+                        <p><span></span>Control Panel</p>
                     </header>
+                    <div class="content">
+                        <table class="table table-hover table-borderless">
+                            <tbody>
+                            <tr>
+                                <td class="col-sm-2">Equities</td>
+                                <td class="col-sm-8">
+                                    <input type="text" data-bind="sliderValue: controlPanel.equities" />
+                                </td>
+                                <td class="col-sm-1"><span data-bind="text: controlPanel.equities"></span></td>
+                            </tr>
+                            <tr>
+                                <td>Gilts</td>
+                                <td>
+                                    <input type="text" data-bind="sliderValue: controlPanel.gilts" />
+                                </td>
+                                <td><span data-bind="text: controlPanel.gilts"></span></td>
+                            </tr>
+                            <tr>
+                                <td>Swaps</td>
+                                <td>
+                                    <input type="text" data-bind="sliderValue: controlPanel.swaps" />
+                                </td>
+                                <td><span data-bind="text: controlPanel.swaps"></span></td>
+                            </tr>
+                            <tr>
+                                <td>Synthetic Assets</td>
+                                <td>
+                                    <input type="text" data-bind="sliderValue: { value: controlPanel.syntheticAssets, step: 10, max: 200 }" />
+                                </td>
+                                <td><span data-bind="text: controlPanel.syntheticAssets"></span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div> <!-- //end inner -->
             </div>
 
@@ -167,13 +206,48 @@
 
     <script>
 
-    var fp = fp || {};
+        ko.bindingHandlers.sliderValue = {
+            init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var params = valueAccessor();
 
+                //ensure valueAccessor is either an observable item or contains a 'value' item
+                if (!(ko.isObservable(params) || params['value'])){
+                    throw "You need to define an observable value for the sliderValue. Either pass the observable directly or in the 'value' field in the parameters";
+                }
 
-    fp.RiskModel = function (dependencies) {
-        var self = this;
+                var valueObservable;
+                if (ko.isObservable(params)){       //if observable, create slider using params directly
+                    valueObservable = params;
+                    $(element).slider({value: ko.unwrap(params)});
+                }else{                              //otherwise, replace params['value'] with the actual value and create slider using set of parameters
+                    valueObservable = params['value'];
+                    params['value'] = ko.unwrap(valueObservable);
+                    $(element).slider(params);
+                }
 
-        self.colours = ["#bdea74", "#eae874", "#2FABE9", "#FA5833"];
+                $(element).on('slide', function (ev) {
+                    valueObservable(ev.value);
+                });
+            },
+            update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var modelValue = valueAccessor();
+                var valueObservable;
+                if (ko.isObservable(modelValue)){
+                    valueObservable = modelValue;
+                }else{
+                    valueObservable = modelValue['value'];
+                }
+
+                $(element).slider('setValue', valueObservable());
+            }
+        };
+        
+        var fp = fp || {};
+
+        fp.RiskModel = function (dependencies) {
+            var self = this;
+
+            self.colours = ["#bdea74", "#eae874", "#2FABE9", "#FA5833"];
 
 //        self.organisationId = ko.observable(Risk.ORGID);
 //        self.reportId = ko.observable();
@@ -181,105 +255,105 @@
 //        self.debug = ko.observable('');
 //        self.title = ko.observable('');
 //        self.body = ko.observable('');
-        self.chartData = ko.observableArray([]);
+            self.chartData = ko.observableArray([]);
 //        self.tableTitle = ko.observable('');
 //        self.maxCols = ko.observable(20);
 //        self.skip = ko.observable(1);
 //        self.fixedCols = ko.observable(0);
 //        self.moduleName = ko.observable();
-        self.riskTableOriginal = ko.observableArray([]);
-        self.chartYAxisTitle = ko.observable('Percentage of Total Liabilities');
+            self.riskTableOriginal = ko.observableArray([]);
+            self.chartYAxisTitle = ko.observable('Percentage of Total Liabilities');
 
 
-        self.options = {
-            skip: 1,
-            decimalPlaces: 2,
-            drilldown: 'byName',
-            drilldownColumnIndex: 1,
-            na: '-'
-        };
-
-
-        if (!dependencies) dependencies = {};
-        self.chartWrapper = dependencies.chartWrapper || new irisHighChartWrapper();
-
-
-        self.waterfallData = ko.computed(function () {
-            var colours = ["#D94542", "#578BCA", "#819E43", "#B0C9F5", "#9EDAEB"];
-            var colourIndex = -1;
-            var currentCategory = "";
-            var result = [];
-            if (self.chartData().length === 0) return result;
-
-            var stringData = ko.utils.stringifyJson(self.chartData());
-            var copyOfOriginalData = JSON.parse(stringData);
-            copyOfOriginalData.shift();
-
-            var diversificationFound = false;
-
-            ko.utils.arrayForEach(copyOfOriginalData, function (data) {
-                data.shift();
-
-                if (data[0] !== null && diversificationFound === false) {
-                    if (data[2] !== currentCategory) {
-                        colourIndex += 1;
-                        currentCategory = data[2];
-                    }
-                    var y = parseFloat(data[1]);
-                    y *= 100;
-                    if (data[0] === "Diversification") {
-                        diversificationFound = true;
-                        var y1 = parseFloat(y.toFixed(1)) - (parseFloat(y.toFixed(2)) * 2);
-                        result.push({ name: data[0], y: y1, color: colours[colourIndex] });
-                    } else {
-                        result.push({ name: data[0], y: parseFloat(y.toFixed(2)), color: colours[colourIndex] });
-                    }
-                }
-            });
-
-            result.push({ name: 'Total', y: 0, color: colours[colourIndex += 1] });
-
-            return result;
-        });
-
-        self.totalSeriesData = ko.computed(function () {
-            var result = [];
-            if (self.chartData().length === 0) return result;
-
-            var stringData = ko.utils.stringifyJson(self.chartData());
-            var copyOfOriginalData = JSON.parse(stringData);
-            copyOfOriginalData.shift();
-
-            ko.utils.arrayForEach(copyOfOriginalData, function (data) {
-                data.shift();
-                if (data[0] !== "Total" && data[0] !== null) {
-                    result.push({ y: 0 });
-                } else if (data[0] === "Total") {
-                    var y = parseFloat(data[1]);
-                    y *= 100;
-                    result.push({ y: y });
-                }
-            });
-
-            return result;
-        });
-
-        self.displayChart = ko.computed(function () {
-            if (self.waterfallData().length === 0) return;
-            if (self.totalSeriesData().length === 0) return;
-
-            var options = {
-                chartId: "#riskChart",
-                waterFallData: self.waterfallData(),
-                independantData: self.totalSeriesData(),
-                yAxisTitle: self.chartYAxisTitle(),
-                xAxisTitle: "Risk Type",
-                dataLabels: true
+            self.options = {
+                skip: 1,
+                decimalPlaces: 2,
+                drilldown: 'byName',
+                drilldownColumnIndex: 1,
+                na: '-'
             };
 
-            self.chartWrapper.displayWaterfallChart(options);
 
-        });
+            if (!dependencies) dependencies = {};
+            self.chartWrapper = dependencies.chartWrapper || new irisHighChartWrapper();
+
+
+            self.waterfallData = ko.computed(function () {
+                var colours = ["#D94542", "#578BCA", "#819E43", "#B0C9F5", "#9EDAEB"];
+                var colourIndex = -1;
+                var currentCategory = "";
+                var result = [];
+                if (self.chartData().length === 0) return result;
+
+                var stringData = ko.utils.stringifyJson(self.chartData());
+                var copyOfOriginalData = JSON.parse(stringData);
+                copyOfOriginalData.shift();
+
+                var diversificationFound = false;
+
+                ko.utils.arrayForEach(copyOfOriginalData, function (data) {
+                    data.shift();
+
+                    if (data[0] !== null && diversificationFound === false) {
+                        if (data[2] !== currentCategory) {
+                            colourIndex += 1;
+                            currentCategory = data[2];
+                        }
+                        var y = parseFloat(data[1]);
+                        y *= 100;
+                        if (data[0] === "Diversification") {
+                            diversificationFound = true;
+                            var y1 = parseFloat(y.toFixed(1)) - (parseFloat(y.toFixed(2)) * 2);
+                            result.push({ name: data[0], y: y1, color: colours[colourIndex] });
+                        } else {
+                            result.push({ name: data[0], y: parseFloat(y.toFixed(2)), color: colours[colourIndex] });
+                        }
+                    }
+                });
+
+                result.push({ name: 'Total', y: 0, color: colours[colourIndex += 1] });
+
+                return result;
+            });
+
+            self.totalSeriesData = ko.computed(function () {
+                var result = [];
+                if (self.chartData().length === 0) return result;
+
+                var stringData = ko.utils.stringifyJson(self.chartData());
+                var copyOfOriginalData = JSON.parse(stringData);
+                copyOfOriginalData.shift();
+
+                ko.utils.arrayForEach(copyOfOriginalData, function (data) {
+                    data.shift();
+                    if (data[0] !== "Total" && data[0] !== null) {
+                        result.push({ y: 0 });
+                    } else if (data[0] === "Total") {
+                        var y = parseFloat(data[1]);
+                        y *= 100;
+                        result.push({ y: y });
+                    }
+                });
+
+                return result;
+            });
+
+            self.displayChart = ko.computed(function () {
+                if (self.waterfallData().length === 0) return;
+                if (self.totalSeriesData().length === 0) return;
+
+                var options = {
+                    chartId: "#riskChart",
+                    waterFallData: self.waterfallData(),
+                    independantData: self.totalSeriesData(),
+                    yAxisTitle: self.chartYAxisTitle(),
+                    xAxisTitle: "Risk Type",
+                    dataLabels: true
+                };
+
+                self.chartWrapper.displayWaterfallChart(options);
+
+            });
 
 //        self.getRiskTableTitles = function () {
 //            if (self.riskTableOriginal().length == 0) return "";
@@ -361,7 +435,7 @@
 //        self.AjaxCallSettings = [
 //            { "Name": "GetLiveReportsByOrganisation", "Fields": [{ "OrganisationId": "organisationId" }] }
 //        ];
-    };
+        };
 
 
         fp.riskData = [["Date","Risk Type","Percentage of Total Liabilities","Category",null],["31 January 2014","Equity Risk","0.010765388","Asset Risk",null],["31 January 2014","Alternative Risk","0.00533794","Asset Risk",null],["31 January 2014","FX Risk","0.000576727","Asset Risk",null],["31 January 2014","Credit Risk","0.026769249","Asset Risk",null],["31 January 2014","Insurance Risk","0.006609667","Asset Risk",null],["31 January 2014","Interest Rate Risk","0.012016951","Liability Risk",null],["31 January 2014","Inflation Risk","0.019474715","Liability Risk",null],["31 January 2014","Interest Rate Basis Risk","0.028957407","Basis Risk",null],["31 January 2014","Inflation Basis Risk","0.031308809","Basis Risk",null],["31 January 2014","Diversification","0.076792724","Diversification",null],["31 January 2014","Total","0.06502413","Total",null]];
@@ -371,7 +445,10 @@
             var self = this;
 
             self.controlPanel = {
-
+                equities: ko.observable(1),
+                gilts: ko.observable(6),
+                swaps: ko.observable(8),
+                syntheticAssets: ko.observable(50)
             };
 
             self.prmf = {
@@ -395,3 +472,4 @@
 
 </body>
 </html>
+
