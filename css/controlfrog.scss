@@ -1207,6 +1207,13 @@ body {
 }
 /* RAG media queries */
 @media (min-width: 768px) {
+
+  .prmf-status{
+    font-size: 30px;
+  }
+
+  .prmf-icon {  }
+
 	.cf-rag {
 			height: 100%;
 	}
@@ -1331,6 +1338,11 @@ body {
 	}
 }
 @media (min-width: 1400px){
+
+  .prmf-status{
+    font-size: 50px;
+  }
+
 	.col-sm-6 .col-sm-12 .col-sm-6 {
 		.cf-figs-fig {
 			font-size: 3em;
