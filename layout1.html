@@ -18,12 +18,11 @@
 	<script src="js/jquery.sparklines.js"></script>			
     <script src="js/bootstrap.js"></script>
     <script src="js/controlfrog-plugins.js"></script>
-    <script src="js/modernizr-dev.js"></script>
 
     <!-- slider -->
     <link href="slider/css/slider.css" rel="stylesheet" />
     <script src="slider/js/bootstrap-slider.js"></script>
-
+    <script src="js/modernizr-dev.js"></script>
 
     <!--[if lt IE 9]>
 		<script src="js/respond.min.js"></script>
@@ -146,19 +145,19 @@
 
                             <div class="cf-bars">
                                 <ul>
-                                    <li style="height: 25%">
-                                        <div class="cf-bars-bar m-red mb"></div>
+                                    <li>
+                                        <div class="cf-bars-bar m-red mb prmf-status"></div>
                                     </li>
-                                    <li style="height: 25%">
-                                        <div class="cf-bars-bar m-amber mb"></div>
+                                    <li>
+                                        <div class="cf-bars-bar m-amber mb prmf-status"></div>
                                     </li>
-                                    <li style="height: 25%">
-                                        <div class="cf-bars-bar m-green mb">
-                                            <i class="glyphicon glyphicon-ok"></i>
+                                    <li>
+                                        <div class="cf-bars-bar m-green mb prmf-status">
+                                            <span class="glyphicon glyphicon-ok prmf-icon"></span>
                                         </div>
                                     </li>
-                                    <li style="height: 25%">
-                                        <div class="cf-bars-bar m-green mb"></div>
+                                    <li>
+                                        <div class="cf-bars-bar m-green mb prmf-status"></div>
                                     </li>
                                 </ul>
                             </div>
@@ -176,8 +175,12 @@
                 <!-- bottom left -->
                 <div class="inner">
                     <header>
-                        <p><span></span>Bottom Left</p>
+                        <p><span></span>Risk</p>
                     </header>
+
+                    <div class="content">
+                        <div id="riskChart"></div>
+                    </div>
                 </div> <!-- //end inner -->
             </div>
 
@@ -197,8 +200,11 @@
         </div>
     </div>
 
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/highcharts-more.js"></script>
 
     <script src="http://cdnjs.cloudflare.com/ajax/libs/knockout/3.1.0/knockout-min.js"></script>
+    <script src="js/app/services/chartHelper.js"></script>
 
     <script>
 
@@ -239,6 +245,199 @@
         };
 
         var fp = fp || {};
+
+        fp.RiskModel = function (dependencies) {
+            var self = this;
+
+            self.colours = ["#bdea74", "#eae874", "#2FABE9", "#FA5833"];
+
+//        self.organisationId = ko.observable(Risk.ORGID);
+//        self.reportId = ko.observable();
+//        self.noData = ko.observable(false);
+//        self.debug = ko.observable('');
+//        self.title = ko.observable('');
+//        self.body = ko.observable('');
+            self.chartData = ko.observableArray([]);
+//        self.tableTitle = ko.observable('');
+//        self.maxCols = ko.observable(20);
+//        self.skip = ko.observable(1);
+//        self.fixedCols = ko.observable(0);
+//        self.moduleName = ko.observable();
+            self.riskTableOriginal = ko.observableArray([]);
+            self.chartYAxisTitle = ko.observable('Percentage of Total Liabilities');
+
+
+            self.options = {
+                skip: 1,
+                decimalPlaces: 2,
+                drilldown: 'byName',
+                drilldownColumnIndex: 1,
+                na: '-'
+            };
+
+
+            if (!dependencies) dependencies = {};
+            self.chartWrapper = dependencies.chartWrapper || new irisHighChartWrapper();
+
+
+            self.waterfallData = ko.computed(function () {
+                var colours = ["#D94542", "#578BCA", "#819E43", "#B0C9F5", "#9EDAEB"];
+                var colourIndex = -1;
+                var currentCategory = "";
+                var result = [];
+                if (self.chartData().length === 0) return result;
+
+                var stringData = ko.utils.stringifyJson(self.chartData());
+                var copyOfOriginalData = JSON.parse(stringData);
+                copyOfOriginalData.shift();
+
+                var diversificationFound = false;
+
+                ko.utils.arrayForEach(copyOfOriginalData, function (data) {
+                    data.shift();
+
+                    if (data[0] !== null && diversificationFound === false) {
+                        if (data[2] !== currentCategory) {
+                            colourIndex += 1;
+                            currentCategory = data[2];
+                        }
+                        var y = parseFloat(data[1]);
+                        y *= 100;
+                        if (data[0] === "Diversification") {
+                            diversificationFound = true;
+                            var y1 = parseFloat(y.toFixed(1)) - (parseFloat(y.toFixed(2)) * 2);
+                            result.push({ name: data[0], y: y1, color: colours[colourIndex] });
+                        } else {
+                            result.push({ name: data[0], y: parseFloat(y.toFixed(2)), color: colours[colourIndex] });
+                        }
+                    }
+                });
+
+                result.push({ name: 'Total', y: 0, color: colours[colourIndex += 1] });
+
+                return result;
+            });
+
+            self.totalSeriesData = ko.computed(function () {
+                var result = [];
+                if (self.chartData().length === 0) return result;
+
+                var stringData = ko.utils.stringifyJson(self.chartData());
+                var copyOfOriginalData = JSON.parse(stringData);
+                copyOfOriginalData.shift();
+
+                ko.utils.arrayForEach(copyOfOriginalData, function (data) {
+                    data.shift();
+                    if (data[0] !== "Total" && data[0] !== null) {
+                        result.push({ y: 0 });
+                    } else if (data[0] === "Total") {
+                        var y = parseFloat(data[1]);
+                        y *= 100;
+                        result.push({ y: y });
+                    }
+                });
+
+                return result;
+            });
+
+            self.displayChart = ko.computed(function () {
+                if (self.waterfallData().length === 0) return;
+                if (self.totalSeriesData().length === 0) return;
+
+                var options = {
+                    chartId: "#riskChart",
+                    waterFallData: self.waterfallData(),
+                    independantData: self.totalSeriesData(),
+                    yAxisTitle: self.chartYAxisTitle(),
+                    xAxisTitle: "Risk Type",
+                    dataLabels: true
+                };
+
+                self.chartWrapper.displayWaterfallChart(options);
+
+            });
+
+//        self.getRiskTableTitles = function () {
+//            if (self.riskTableOriginal().length == 0) return "";
+//            if (self.matrix === undefined) return [];
+//            var titles = self.matrix.getFilteredTitles();
+//            if (titles.length > 0) titles[0].title = "";
+//            return titles;
+//        };
+//
+//        self.tableTitles = ko.computed(function () {
+//            return self.getRiskTableTitles();
+//        });
+
+//        self.getTableTitle = function () {
+//            if (self.riskTableOriginal().length === 0) return "";
+//            var sourceTitles = self.riskTableOriginal()[0].slice(0);
+//            sourceTitles.shift(); // Shift off the date column
+//            return sourceTitles[0];
+//        };
+
+//        self.tableTitle = ko.computed(function () {
+//            return self.getTableTitle();
+//        });//.extend({ throttle: 1 });
+
+//        self.getAsAt = function () {
+//            if (self.riskTableOriginal() === undefined) return "";
+//            if (self.riskTableOriginal().length == 0) return "";
+//            return self.riskTableOriginal()[1][0];
+//        };
+//
+//        self.asAt = ko.computed(function () {
+//            return self.getAsAt();
+//        });//.extend({ throttle: 1 });
+
+//        self.init = function (moduleName, queryName, reportId) {
+//            if (reportId === "00000000-0000-0000-0000-000000000000") {
+//                self.noData(true);
+//                return;
+//            }
+//            self.moduleName(moduleName);
+//            self.reportId(reportId);
+//            self.getReportData(queryName, moduleName);
+//        };
+
+
+
+//        self.getReportData = function (queryName, moduleName) {
+//            ajaxService.callMaster(queryName, self, function (reportSuccess) {
+//
+//                var localTableData = [];
+//
+//                if (moduleName === "FRAR") {
+//                    localTableData = JSON.parse(reportSuccess.Data.FRARDetail);
+//                    self.chartData(JSON.parse(reportSuccess.Data.FRARChart));
+//
+//                }else if (moduleName === "RRAR") {
+//                    localTableData = JSON.parse(reportSuccess.Data.RRARDetail);
+//                    self.chartData(JSON.parse(reportSuccess.Data.RRARChart));
+//                    self.chartYAxisTitle("Percentage");
+//
+//                } else {
+//                    localTableData = JSON.parse(reportSuccess.Data.VarDetail);
+//                    self.chartData(JSON.parse(reportSuccess.Data.VarChart));
+//                }
+//                self.title(reportSuccess.Data.Title);
+//                self.body(reportSuccess.Data.Body);
+//
+//                self.matrix.init(localTableData, self.options);
+//
+//                self.riskTableOriginal(localTableData);
+//
+//            }, function (reportFail) {
+//                self.noData(true);
+//                return;
+//            });
+//        };
+
+
+//        self.AjaxCallSettings = [
+//            { "Name": "GetLiveReportsByOrganisation", "Fields": [{ "OrganisationId": "organisationId" }] }
+//        ];
+        };
 
         fp.FlightPlanModel = function (dependencies) {
             var self = this;
@@ -285,10 +484,13 @@
                 //me.flightPlanChart.display();
             });
         };
+        
+
+        fp.riskData = [["Date","Risk Type","Percentage of Total Liabilities","Category",null],["31 January 2014","Equity Risk","0.010765388","Asset Risk",null],["31 January 2014","Alternative Risk","0.00533794","Asset Risk",null],["31 January 2014","FX Risk","0.000576727","Asset Risk",null],["31 January 2014","Credit Risk","0.026769249","Asset Risk",null],["31 January 2014","Insurance Risk","0.006609667","Asset Risk",null],["31 January 2014","Interest Rate Risk","0.012016951","Liability Risk",null],["31 January 2014","Inflation Risk","0.019474715","Liability Risk",null],["31 January 2014","Interest Rate Basis Risk","0.028957407","Basis Risk",null],["31 January 2014","Inflation Basis Risk","0.031308809","Basis Risk",null],["31 January 2014","Diversification","0.076792724","Diversification",null],["31 January 2014","Total","0.06502413","Total",null]];
 
         fp.flightPlanData = [["Date","GF Asset (Gilts +177bps)","GF Liability (Gilt flat)",null,null],["28 June 2013","1419816589","1824449370",null,null],["30 September 2013","1416916182","1818554559",null,null],["30 June 2014","1412647751","1793890195",null,null],["30 June 2015","1417703004","1769838176",null,null],["30 June 2016","1429176417","1754250356",null,null],["30 June 2017","1453465547","1754488164",null,null],["30 June 2018","1482378990","1759952119",null,null],["30 June 2019","1513284499","1767020958",null,null],["30 June 2020","1542372293","1778332423",null,null],["30 June 2021","1578037371","1796684312",null,null],["30 June 2022","1619577242","1820908259",null,null],["30 June 2023","1659350486","1841652201",null,null],["30 June 2024","1682379988","1842430887",null,null],["30 June 2025","1699311422","1835617536",null,null],["30 June 2026","1715221123","1826781602",null,null],["30 June 2027","1732560717","1818281248",null,null],["30 June 2028","1749060877","1807627789",null,null],["30 June 2029","1762273714","1792263917",null,null],["30 June 2030","1774795214","1774795214",null,null]];
 
-        fp.ViewModel = function () {
+        fp.ViewModel = function(){
             var self = this;
 
             self.controlPanel = {
@@ -303,7 +505,7 @@
             };
 
             self.risk = {
-
+                riskModel : new fp.RiskModel(new irisHighChartWrapper())
             };
 
             self.flightPlan = {
@@ -312,6 +514,7 @@
         };
 
         var vm = new fp.ViewModel();
+        vm.risk.riskModel.chartData(fp.riskData);
         //vm.flightPlan.chartData(fp.flightPlanData);
         ko.applyBindings(vm);
 
