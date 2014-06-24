@@ -251,7 +251,7 @@ a:hover {
 /* Color definitions */
 body.black {
   background-color: #2b2b2b;
-  color: darkgrey; }
+  color: darkgray; }
   body.black .m-missing {
     color: #4f4f4f !important; }
   body.black .mb-missing {
@@ -259,14 +259,14 @@ body.black {
   body.black .cf-nav {
     background: #333333; }
     body.black .cf-nav a {
-      color: darkgrey; }
+      color: darkgray; }
       body.black .cf-nav a.active {
         background-color: #2b2b2b; }
       body.black .cf-nav a:hover {
         background-color: #4f4f4f;
-        color: darkgrey; }
+        color: darkgray; }
     body.black .cf-nav .icon-bar {
-      background-color: darkgrey; }
+      background-color: darkgray; }
     body.black .cf-nav .cf-nav-toggle:hover {
       background-color: inherit; }
       body.black .cf-nav .cf-nav-toggle:hover .icon-bar {
@@ -274,7 +274,7 @@ body.black {
   body.black .navbar {
     background-color: #4f4f4f; }
   body.black .navbar-default .navbar-nav > .active > a, body.black .navbar-default .navbar-nav > .active > a:hover, body.black .navbar-default .navbar-nav > .active > a:focus {
-    background-color: darkgrey; }
+    background-color: darkgray; }
   body.black .cf-item header {
     border-bottom-color: #4f4f4f; }
     body.black .cf-item header p span {
@@ -299,7 +299,7 @@ body.black {
       border-bottom: none; }
 body.white {
   background-color: white;
-  color: darkgrey; }
+  color: darkgray; }
   body.white .m-missing {
     color: #e2e2e2 !important; }
   body.white .mb-missing {
@@ -312,17 +312,17 @@ body.white {
         background-color: white; }
       body.white .cf-nav a:hover {
         background-color: #e2e2e2;
-        color: darkgrey; }
+        color: darkgray; }
     body.white .cf-nav .icon-bar {
-      background-color: darkgrey; }
+      background-color: darkgray; }
     body.white .cf-nav .cf-nav-toggle:hover {
       background-color: inherit; }
       body.white .cf-nav .cf-nav-toggle:hover .icon-bar {
         background-color: #000; }
   body.white .cf-item header {
-    border-bottom-color: darkgrey; }
+    border-bottom-color: darkgray; }
     body.white .cf-item header p span {
-      background-color: darkgrey; }
+      background-color: darkgray; }
   body.white .metric {
     color: #7d7d7d; }
   body.white .cf-rag ul li {
@@ -331,7 +331,7 @@ body.white {
       border-bottom: none; }
   body.white .cf-rag .cf-figs li,
   body.white .cf-rag .cf-txts li {
-    border-bottom: solid 1px darkgrey; }
+    border-bottom: solid 1px darkgray; }
     body.white .cf-rag .cf-figs li:last-child,
     body.white .cf-rag .cf-txts li:last-child {
       border-bottom: 0; }
@@ -340,13 +340,13 @@ body.white {
     body.white .cf-funnel .cf-funnels li:last-child {
       border-bottom: none; }
   body.white .cf-funnel .cf-figstxts li {
-    border-bottom: solid 1px darkgrey; }
+    border-bottom: solid 1px darkgray; }
     body.white .cf-funnel .cf-figstxts li:last-child {
       border-bottom: none; }
   body.white .cf-rss .carousel-indicators .active {
-    background-color: darkgrey; }
+    background-color: darkgray; }
   body.white .cf-rss .carousel-indicators li {
-    border: 1px solid darkgrey; }
+    border: 1px solid darkgray; }
 
 .m-red {
   color: #f23c25 !important; }
@@ -374,6 +374,14 @@ body.white {
     border-color: transparent transparent #66ce39 transparent; }
   .m-green .arrow-down {
     border-color: #66ce39 transparent transparent transparent; }
+
+.prmf-status {
+  font-size: 60px;
+  text-align: center; }
+
+.prmf-icon {
+  color: white !important;
+  padding-top: 20px; }
 
 /* Arrows */
 .arrow-up {
@@ -741,7 +749,7 @@ body.white {
     font-size: 3.5em; }
 
   .col-sm-6 .cf-figs-fig {
-    font-size: 6em; }
+    font-size: 4em; }
   .col-sm-6 .cf-txts-txt {
     font-size: 2em; }
   .col-sm-6 .col-sm-4 .cf-figs-fig {
