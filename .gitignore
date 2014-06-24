@@ -186,3 +186,5 @@ UpgradeLog*.htm
 FakesAssemblies/
 .idea/workspace.xml
 .idea/workspace.xml
+.idea/scopes/scope_settings.xml
+.idea/scopes/scope_settings.xml

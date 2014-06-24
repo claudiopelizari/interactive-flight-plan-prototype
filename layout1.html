@@ -254,19 +254,7 @@
             var self = this;
 
             self.colours = ["#bdea74", "#eae874", "#2FABE9", "#FA5833"];
-
-//        self.organisationId = ko.observable(Risk.ORGID);
-//        self.reportId = ko.observable();
-//        self.noData = ko.observable(false);
-//        self.debug = ko.observable('');
-//        self.title = ko.observable('');
-//        self.body = ko.observable('');
             self.chartData = ko.observableArray([]);
-//        self.tableTitle = ko.observable('');
-//        self.maxCols = ko.observable(20);
-//        self.skip = ko.observable(1);
-//        self.fixedCols = ko.observable(0);
-//        self.moduleName = ko.observable();
             self.riskTableOriginal = ko.observableArray([]);
             self.chartYAxisTitle = ko.observable('Percentage of Total Liabilities');
 
@@ -358,94 +346,10 @@
                 };
 
                 self.chartWrapper.displayWaterfallChart(options);
-
             });
-
-//        self.getRiskTableTitles = function () {
-//            if (self.riskTableOriginal().length == 0) return "";
-//            if (self.matrix === undefined) return [];
-//            var titles = self.matrix.getFilteredTitles();
-//            if (titles.length > 0) titles[0].title = "";
-//            return titles;
-//        };
-//
-//        self.tableTitles = ko.computed(function () {
-//            return self.getRiskTableTitles();
-//        });
-
-//        self.getTableTitle = function () {
-//            if (self.riskTableOriginal().length === 0) return "";
-//            var sourceTitles = self.riskTableOriginal()[0].slice(0);
-//            sourceTitles.shift(); // Shift off the date column
-//            return sourceTitles[0];
-//        };
-
-//        self.tableTitle = ko.computed(function () {
-//            return self.getTableTitle();
-//        });//.extend({ throttle: 1 });
-
-//        self.getAsAt = function () {
-//            if (self.riskTableOriginal() === undefined) return "";
-//            if (self.riskTableOriginal().length == 0) return "";
-//            return self.riskTableOriginal()[1][0];
-//        };
-//
-//        self.asAt = ko.computed(function () {
-//            return self.getAsAt();
-//        });//.extend({ throttle: 1 });
-
-//        self.init = function (moduleName, queryName, reportId) {
-//            if (reportId === "00000000-0000-0000-0000-000000000000") {
-//                self.noData(true);
-//                return;
-//            }
-//            self.moduleName(moduleName);
-//            self.reportId(reportId);
-//            self.getReportData(queryName, moduleName);
-//        };
-
-
-
-//        self.getReportData = function (queryName, moduleName) {
-//            ajaxService.callMaster(queryName, self, function (reportSuccess) {
-//
-//                var localTableData = [];
-//
-//                if (moduleName === "FRAR") {
-//                    localTableData = JSON.parse(reportSuccess.Data.FRARDetail);
-//                    self.chartData(JSON.parse(reportSuccess.Data.FRARChart));
-//
-//                }else if (moduleName === "RRAR") {
-//                    localTableData = JSON.parse(reportSuccess.Data.RRARDetail);
-//                    self.chartData(JSON.parse(reportSuccess.Data.RRARChart));
-//                    self.chartYAxisTitle("Percentage");
-//
-//                } else {
-//                    localTableData = JSON.parse(reportSuccess.Data.VarDetail);
-//                    self.chartData(JSON.parse(reportSuccess.Data.VarChart));
-//                }
-//                self.title(reportSuccess.Data.Title);
-//                self.body(reportSuccess.Data.Body);
-//
-//                self.matrix.init(localTableData, self.options);
-//
-//                self.riskTableOriginal(localTableData);
-//
-//            }, function (reportFail) {
-//                self.noData(true);
-//                return;
-//            });
-//        };
-
-
-//        self.AjaxCallSettings = [
-//            { "Name": "GetLiveReportsByOrganisation", "Fields": [{ "OrganisationId": "organisationId" }] }
-//        ];
         };
 
-
         fp.riskData = [["Date","Risk Type","Percentage of Total Liabilities","Category",null],["31 January 2014","Equity Risk","0.010765388","Asset Risk",null],["31 January 2014","Alternative Risk","0.00533794","Asset Risk",null],["31 January 2014","FX Risk","0.000576727","Asset Risk",null],["31 January 2014","Credit Risk","0.026769249","Asset Risk",null],["31 January 2014","Insurance Risk","0.006609667","Asset Risk",null],["31 January 2014","Interest Rate Risk","0.012016951","Liability Risk",null],["31 January 2014","Inflation Risk","0.019474715","Liability Risk",null],["31 January 2014","Interest Rate Basis Risk","0.028957407","Basis Risk",null],["31 January 2014","Inflation Basis Risk","0.031308809","Basis Risk",null],["31 January 2014","Diversification","0.076792724","Diversification",null],["31 January 2014","Total","0.06502413","Total",null]];
-
 
         fp.ViewModel = function(){
             var self = this;
