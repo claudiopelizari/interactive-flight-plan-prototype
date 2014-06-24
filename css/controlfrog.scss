@@ -1145,10 +1145,12 @@ body {
 		}
 	}
 	
-	.cf-bars,
-	.cf-figs {
-		width: 25%;
-	}
+	.cf-bars{
+      width: 15%;
+    }
+	.cf-figs{
+      width: 35%
+    }
 	
 	.cf-figs {
 		&.cf-figs-only {
