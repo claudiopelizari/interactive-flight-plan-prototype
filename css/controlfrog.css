@@ -628,9 +628,10 @@ body.white {
         display: table-cell;
         vertical-align: middle;
         margin: 0; }
-  .cf-rag .cf-bars,
+  .cf-rag .cf-bars {
+    width: 15%; }
   .cf-rag .cf-figs {
-    width: 25%; }
+    width: 35%; }
   .cf-rag .cf-figs.cf-figs-only {
     width: 35%; }
   .cf-rag .cf-txts.cf-txts-only {
