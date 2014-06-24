@@ -666,6 +666,7 @@ function cfSizeItems(){
 	$('.cf-item').each(function(){
 		if(width > 767 ){
 			$(this).height($(this).width());
+
 		}
 		else{
 			$(this).height('auto');

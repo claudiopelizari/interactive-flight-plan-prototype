@@ -45,6 +45,7 @@ $mgreen: #66ce39;
 $mamber: #e89640;
 $mred: #f23c25;
 
+
 $whitebackground: #fff;
 $whitelight: #e2e2e2;
 $whitelightest: #a9a9a9;
@@ -711,6 +712,7 @@ body {
 	.arrow-up {
 		border-color: transparent transparent $mamber transparent;
 	}
+
 	.arrow-down {
 		border-color: $mamber transparent transparent transparent;
 	}
@@ -731,6 +733,18 @@ body {
 		border-color: $mgreen transparent transparent transparent;
 	}
 }
+
+.prmf-status{
+  font-size: 60px;
+  text-align: center;
+}
+
+.prmf-icon {
+  color: $whitebackground !important;
+  padding-top: 20px;
+}
+
+
 
 /* Arrows */
 .arrow-up {
