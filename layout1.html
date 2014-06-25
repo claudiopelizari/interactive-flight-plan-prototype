@@ -6,8 +6,10 @@
     <title>Controlfrog - Meaningful Metrics</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <link href="css/styles.css" rel="stylesheet">
+
     <link href="css/bootstrap.css" rel="stylesheet">
-    <link href="css/controlfrog.css" rel="stylesheet" media="screen">   
+    <link href="css/controlfrog.css" rel="stylesheet" media="screen">
 	<link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
 	
 	<script src="//code.jquery.com/jquery-1.9.1.min.js"></script>    
@@ -47,38 +49,57 @@
                         <p><span></span>Control Panel</p>
                     </header>
                     <div class="content">
-                        <table class="table table-hover table-borderless">
-                            <tbody>
-                            <tr>
-                                <td class="col-sm-2">Equities</td>
-                                <td class="col-sm-8">
-                                    <input type="text" data-bind="sliderValue: controlPanel.equities" />
-                                </td>
-                                <td class="col-sm-1"><span data-bind="text: controlPanel.equities"></span></td>
-                            </tr>
-                            <tr>
-                                <td>Gilts</td>
-                                <td>
-                                    <input type="text" data-bind="sliderValue: controlPanel.gilts" />
-                                </td>
-                                <td><span data-bind="text: controlPanel.gilts"></span></td>
-                            </tr>
-                            <tr>
-                                <td>Swaps</td>
-                                <td>
-                                    <input type="text" data-bind="sliderValue: controlPanel.swaps" />
-                                </td>
-                                <td><span data-bind="text: controlPanel.swaps"></span></td>
-                            </tr>
-                            <tr>
-                                <td>Synthetic Assets</td>
-                                <td>
-                                    <input type="text" data-bind="sliderValue: { value: controlPanel.syntheticAssets, step: 10, max: 200 }" />
-                                </td>
-                                <td><span data-bind="text: controlPanel.syntheticAssets"></span></td>
-                            </tr>
-                            </tbody>
-                        </table>
+                        <div id="physicalAssetsContainer" class="panel panel-default">
+                            <div class="panel-heading">Physical Assets</div>
+                            <div class="panel-body">
+                                <div class="row asset-type-row">
+                                    <div class="col-xs-2">Equities</div>
+                                    <div class="col-xs-9">
+                                        <input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.equities, step: 10, max: 100 }" />
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <span data-bind="text: controlPanel.controlPanelModel.equities"></span>
+                                    </div>
+                                </div>
+                                <div class="row asset-type-row">
+                                    <div class="col-xs-2">Gilts</div>
+                                    <div class="col-xs-9">
+                                        <input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.gilts, step: 10, max: 100 }" />
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <span data-bind="text: controlPanel.controlPanelModel.gilts"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="syntheticAssetsContainer" class="panel panel-default">
+                            <div class="panel-heading">Synthetic Assets</div>
+                            <div class="panel-body">
+                                <div class="row asset-type-row">
+                                    <div class="col-xs-2">Swaps</div>
+                                    <div class="col-xs-9">
+                                        <input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.swaps, step: 10, max: 100 }" />
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <span data-bind="text: controlPanel.controlPanelModel.swaps"></span>
+                                    </div>
+                                </div>
+                                <div class="row asset-type-row">
+                                    <div class="col-xs-2">Vol Controlled Equities</div>
+                                    <div class="col-xs-9">
+                                        <input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.volControlledEquities, step: 10, max: 100 }" />
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <span data-bind="text: controlPanel.controlPanelModel.volControlledEquities"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                Total: <span data-bind="text: controlPanel.controlPanelModel.totalAssets"></span>
+                            </div>
+                        </div>
                     </div>
                 </div> <!-- //end inner -->
             </div>
@@ -198,7 +219,7 @@
                     </header>
 
                     <div class="content">
-                        <div id="flightPlan" style="height: 400px"></div>
+                        <div id="flightPlanHighChart" style="height: 400px;"></div>
                     </div>
                 </div> <!-- //end inner -->
             </div>
@@ -210,9 +231,7 @@
     <script src="http://code.highcharts.com/highcharts-more.js"></script>
 
     <script src="http://cdnjs.cloudflare.com/ajax/libs/knockout/3.1.0/knockout-min.js"></script>
-    <script src="js/flot.js"></script>
     <script src="js/app/services/chartHelper.js"></script>
-    <script src="js/app/services/flotChartWrapper.js"></script>
 
     <script>
 
@@ -360,21 +379,22 @@
             var self = this;
 
             if (!dependencies) dependencies = {};
-            self.chartWrapper = dependencies.chartWrapper || new FlotChartWrapper();
+            self.chartWrapper = dependencies.chartWrapper || new irisHighChartWrapper();
 
             self.chartData = ko.observableArray([]);
 
             var seriesData = [
-                { data: [], label: 'Liabilities' },
-                { data: [], label: 'Assets' }
+                { name: 'Liabilities', color: '#2FABE9', data: []},
+                { name: 'Expected Return', color: '#FA5833', data: [] },
+                { name: 'Required Return', color: '#008000', data: [], dashStyle: 'shortdash' }
             ];
 
             var options = {
-                id: "#flightPlan",
-                seriesData: seriesData,
-                colours: ["#2FABE9", "#FA5833"],
-                yLabel: "GBP Millions",
-                xLabel: "Date"
+                renderTo: '#flightPlanHighChart',
+                lineSeriesData: seriesData,
+                yAxisTitle: "GBP Millions",
+                xAxisTitle: "Date",
+                dataLabels: true
             };
 
             var inMillions = function (num) {
@@ -386,18 +406,33 @@
                 if (self.chartData().length === 0) return;
 
                 ko.utils.arrayForEach(self.chartData(), function (item) {
-                    if (item[0] !== 'Date') {
+                    if (item[0] !== 'Date') {   //ignore if first item in array is 'Date' (this is the header)
                         var stamp = moment.utc(item[0]);
-                        if (stamp != undefined) {
-                            var l = [stamp.unix() * 1000 + 1000, inMillions(parseInt(item[1]))]; // liabilities
-                            var a = [stamp.unix() * 1000 + 1000, inMillions(parseInt(item[2]))]; // assets
+                        if (stamp != undefined){
+                            var l = [stamp.unix() * 1000 + 1000, inMillions(parseInt(item[1]))];
+                            var er = [stamp.unix() * 1000 + 1000, inMillions(parseInt(item[2]))];
+                            //fake req return data for now
+                            var rr = [stamp.unix() * 1000 + 1000, inMillions(parseInt(item[1]) - 50000000)];
                             seriesData[0].data.push(l);
-                            seriesData[1].data.push(a)
+                            seriesData[1].data.push(er);
+                            seriesData[2].data.push(rr);
                         }
                     }
                 });
 
-                self.chartWrapper.displayLineChart(options);
+                self.chartWrapper.displayFlightPlanLineChart(options);
+            });
+        };
+
+        fp.ControlPanelModel = function () {
+            var self = this;
+
+            self.equities = ko.observable(30);
+            self.gilts = ko.observable(60);
+            self.swaps = ko.observable(80);
+            self.volControlledEquities = ko.observable(50);
+            self.totalAssets = ko.computed(function () {
+                return self.equities() + self.gilts() + self.swaps() + self.volControlledEquities();
             });
         };
         
@@ -410,10 +445,7 @@
             var self = this;
 
             self.controlPanel = {
-                equities: ko.observable(1),
-                gilts: ko.observable(6),
-                swaps: ko.observable(8),
-                syntheticAssets: ko.observable(50)
+                controlPanelModel: new fp.ControlPanelModel()
             };
 
             self.prmf = {
@@ -425,7 +457,7 @@
             };
 
             self.flightPlan = {
-                flightPlanModel: new fp.FlightPlanModel({ chartWrapper: new FlotChartWrapper() })
+                flightPlanModel: new fp.FlightPlanModel({ chartWrapper: new irisHighChartWrapper() })
             };
         };
 

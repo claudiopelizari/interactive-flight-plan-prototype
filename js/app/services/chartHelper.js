@@ -421,9 +421,63 @@ var irisHighChartWrapper = function() {
         return settings;
     };
 
+    var flightPlanLineChart = function (options){
+        var settings = {
+            chart: {
+                type: 'line'
+            },
+            credits: {
+                enabled: false
+            },
+            title: {
+                text: null
+            },
+            xAxis: {
+                title: {
+                  text: options.xAxisTitle || 'Date'
+                },
+                type: 'datetime',
+                gridLineWidth: 1,
+                gridLineDashStyle: 'dash'
+            },
+            yAxis: {
+                title: {
+                    enabled: true,
+                    text: options.yAxisTitle || 'GBP Millions'
+                },
+                gridLineDashStyle: 'dash'
+            },
+            tooltip: {
+                xDateFormat: '%Y'
+            },
+            legend: {
+                enabled: true,
+                layout: 'vertical',
+                floating: true,
+                verticalAlign: 'bottom',
+                align: 'right',
+                y: -100
+            },
+            plotOptions: {
+                line: {
+                    marker: {
+                        symbol: 'circle',
+                        fillColor: '#FFFFFF',
+                        lineWidth: 2,
+                        radius: 3,
+                        lineColor: null
+                    }
+                }
+            },
+            series: options.lineSeriesData
+        };
+
+        $(options.renderTo).highcharts(settings);
+    };
 
     return {
         displayColumnChart: columnChart,
+        displayFlightPlanLineChart: flightPlanLineChart,
         displayBarChart: barChart,
         displayWaterfallChart: waterFall,
         displayStackedColumnChart: stackedColumnChart,
