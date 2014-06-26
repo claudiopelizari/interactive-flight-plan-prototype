@@ -31,7 +31,7 @@
     padding-bottom: 5px;
     text-align: center;
     background-color: rgba(249, 249, 249, 0.99);
-    }
+}
 
 .flightplan-settings-item {
     padding: 10px;
@@ -40,24 +40,4 @@
 
 .flightplan-settings-targetfundingdate {
     border-top: none;
-}
-
-.flightplan-settings-targetfundingdate-value {
-    font-weight: bold;
-    font-size: 14px;
-    padding: 5px;
-}
-
-.flightplan-settings-button {
-    padding: 2px 4px;
-    font-size: 90%;
-    color: #c0a16b;
-    white-space: nowrap;
-    background-color: #faf2cc;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.flightplan-settings-button:hover {
-    color: #0e90d2;
 }

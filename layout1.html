@@ -221,14 +221,12 @@
                     <div class="content">
                         <div id="flightPlanChart" style="height: 400px;"></div>
                         <div class="flightplan-settings-box active">
-                            <div class="flightPlanSlideOutContent">
+                            <div class="flightplan-settings-box-toggle">
+                                <i class="glyphicon glyphicon-cog"></i>
+                            </div>
+                            <div class="flightplan-settings-content">
                                 <div class="flightplan-settings-item flightplan-settings-targetfundingdate">
-                                    <span>Target funding date:</span>
-                                    <div>
-                                        <span class="flightplan-settings-targetfundingdate-value" data-bind="text: flightPlan.flightPlanModel.targetFundingYear"></span>
-                                        <a class="flightplan-settings-button" data-bind="click: flightPlan.flightPlanModel.addOneToTargetFundingYear"><i class="glyphicon glyphicon-chevron-up"></i></a>
-                                        <a class="flightplan-settings-button" data-bind="click: flightPlan.flightPlanModel.subtractOneFromTargetFundingYear"><i class="glyphicon glyphicon-chevron-down"></i></a>
-                                    </div>
+                                    <span>Target funding year:</span> <select class="form-control" data-bind="options: flightPlan.flightPlanModel.targetFundingYears, value: flightPlan.flightPlanModel.targetFundingYear"></select>
                                 </div>
                                 <div class="flightplan-settings-item">
                                     <span>Contributions:</span>
@@ -259,9 +257,6 @@
                                         </label>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="flightplan-settings-box-toggle">
-                                <i class="glyphicon glyphicon-cog"></i>
                             </div>
                         </div>
                     </div>
@@ -441,6 +436,7 @@
 
             self.chartData = ko.observableArray([]);
             self.targetFundingYear = ko.observable(2032);
+            self.targetFundingYears = ko.observableArray([2024,2025,2026,2027,2028,2029,2030,2031,2032,2033,2034,2035,2036,2037,2038]);
 
             var seriesData = [
                 { name: 'Liabilities', color: '#2FABE9', data: []},
