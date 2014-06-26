@@ -219,7 +219,27 @@
                     </header>
 
                     <div class="content">
-                        <div id="flightPlanHighChart" style="height: 400px;"></div>
+                        <div id="flightPlanChart" style="height: 400px;"></div>
+                        <div class="flightplan-settings-box active">
+                            <div class="flightPlanSlideOutContent">
+                                <div>
+                                    <span>Full funding date: <span data-bind="text: flightPlan.flightPlanModel.fullFundingYear"></span> </span>
+                                    <div class="btn-group btn-group-xs">
+                                        <button class="btn btn-info" type="button"><i class="glyphicon glyphicon-minus-sign"></i></button>
+                                        <button class="btn btn-info" type="button"><i class="glyphicon glyphicon-plus-sign"></i></button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span>Contributions:</span>
+                                </div>
+                                <div>
+                                    <span>Discount Basis:<br/><br></span>
+                                </div>
+                            </div>
+                            <div class="flightplan-settings-box-toggle">
+                                <i class="glyphicon glyphicon-cog"></i>
+                            </div>
+                        </div>
                     </div>
                 </div> <!-- //end inner -->
             </div>
@@ -234,6 +254,20 @@
     <script src="js/app/services/chartHelper.js"></script>
 
     <script>
+
+    $(function () {
+        $(".flightplan-settings-box").animate({
+            right: "-200px"
+        }, "slow").removeClass("active");
+
+        $(".flightplan-settings-box-toggle").on("click", function () {
+            return $(".flightplan-settings-box").hasClass("active") ? ($(".flightplan-settings-box").animate({
+                right: "-200px"
+            }, "slow").removeClass("active"), $(".flightplan-settings-box-toggle span").text("show")) : ($(".flightplan-settings-box").animate({
+                right: "0px"
+            }, "slow").addClass("active"), $(".flightplan-settings-box-toggle span").text("hide")), !1
+        })
+    });
 
         ko.bindingHandlers.sliderValue = {
             init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
@@ -382,15 +416,16 @@
             self.chartWrapper = dependencies.chartWrapper || new irisHighChartWrapper();
 
             self.chartData = ko.observableArray([]);
+            self.fullFundingYear = ko.observable(2017);
 
             var seriesData = [
                 { name: 'Liabilities', color: '#2FABE9', data: []},
-                { name: 'Expected Return', color: '#FA5833', data: [] },
-                { name: 'Required Return', color: '#008000', data: [], dashStyle: 'shortdash' }
+                { name: 'Required Return', color: '#FA5833', data: [] },
+                { name: 'Expected Return', color: '#008000', data: [], dashStyle: 'shortdash' }
             ];
 
             var options = {
-                renderTo: '#flightPlanHighChart',
+                renderTo: '#flightPlanChart',
                 lineSeriesData: seriesData,
                 yAxisTitle: "GBP Millions",
                 xAxisTitle: "Date",
@@ -405,17 +440,25 @@
             self.displayChart = ko.computed(function () {
                 if (self.chartData().length === 0) return;
 
-                ko.utils.arrayForEach(self.chartData(), function (item) {
+                ko.utils.arrayForEach(self.chartData(), function (item, i) {
                     if (item[0] !== 'Date') {   //ignore if first item in array is 'Date' (this is the header)
                         var stamp = moment.utc(item[0]);
                         if (stamp != undefined){
-                            var l = [stamp.unix() * 1000 + 1000, inMillions(parseInt(item[1]))];
-                            var er = [stamp.unix() * 1000 + 1000, inMillions(parseInt(item[2]))];
-                            //fake req return data for now
-                            var rr = [stamp.unix() * 1000 + 1000, inMillions(parseInt(item[1]) - 50000000)];
+                            var rr = [stamp.unix() * 1000 + 1000, inMillions(parseInt(item[1]))];
+                            var l = [stamp.unix() * 1000 + 1000, inMillions(parseInt(item[2]))];
+
+
+                            //fake expected return data for now
+                            var erDummyShift = 0;
+                            if (i < self.chartData().length - 1){
+                                var erDummyShift = Math.floor(Math.random() * 50000000);
+                                erDummyShift *= Math.floor(Math.random()*2) == 1 ? 1 : -1;
+                            }
+                            var er = [stamp.unix() * 1000 + 1000, inMillions(parseInt(item[1]) + erDummyShift)];
+
                             seriesData[0].data.push(l);
-                            seriesData[1].data.push(er);
-                            seriesData[2].data.push(rr);
+                            seriesData[1].data.push(rr);
+                            seriesData[2].data.push(er);
                         }
                     }
                 });
