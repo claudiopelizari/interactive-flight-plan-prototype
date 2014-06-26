@@ -22,7 +22,7 @@
 .flightplan-settings-box-toggle {
     position: absolute;
     left: -25px;
-    top: 20%;
+    top: 60%;
     width: 25px;
     border: 1px solid #2FABE9;
     border-radius: 2px 0px 0px 2px;
@@ -33,11 +33,44 @@
     background-color: rgba(249, 249, 249, 0.99);
 }
 
-.flightplan-settings-item {
+.settings-box-item {
     padding: 10px;
     border-top: 1px dashed #d5d5d5;
 }
 
-.flightplan-settings-targetfundingdate {
+.settings-box-content .settings-box-item:first-child {
     border-top: none;
+}
+
+.risk-settings-box {
+    position: absolute;
+    left: -29px;
+    width: 199px;
+    top: 5%;
+    /*padding: 20px;*/
+    z-index: 9999;
+    border: 1px solid #2FABE9;
+    border-left: none;
+    border-radius: 2px 0px 0px 2px;
+    background-color: rgba(249, 249, 249, 0.92);
+    -webkit-box-shadow: 1px 1px 3px 0px rgba(50, 50, 50, 0.5);
+    -moz-box-shadow:    1px 1px 3px 0px rgba(50, 50, 50, 0.5);
+    box-shadow:         1px 1px 3px 0px rgba(50, 50, 50, 0.5);
+}
+
+.risk-settings-box-toggle {
+    position: absolute;
+    right: -25px;
+    top: 50%;
+    width: 25px;
+    border: 1px solid #2FABE9;
+    border-radius: 2px 0px 0px 2px;
+    border-left: none;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-align: center;
+    background-color: rgba(249, 249, 249, 0.99);
+    -webkit-box-shadow: 1px 1px 3px 0px rgba(50, 50, 50, 0.5);
+    -moz-box-shadow:    1px 1px 3px 0px rgba(50, 50, 50, 0.5);
+    box-shadow:         1px 1px 3px 0px rgba(50, 50, 50, 0.5);
 }

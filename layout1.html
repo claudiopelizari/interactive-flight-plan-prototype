@@ -207,6 +207,54 @@
 
                     <div class="content">
                         <div id="riskChart"></div>
+                        <div class="risk-settings-box active">
+                            <div class="risk-settings-box-toggle">
+                                <i class="glyphicon glyphicon-cog"></i>
+                            </div>
+                            <div class="settings-box-content">
+                                <div class="settings-box-item">
+                                    <span>Basis risk:</span>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="basisRisk" checked>
+                                            Yes
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="basisRisk">
+                                            No
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="settings-box-item">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="riskSetting2" checked>
+                                            fRAR
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="riskSetting2">
+                                            RAR
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="riskSetting2">
+                                            VAR
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="riskSetting2">
+                                            CAR
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div> <!-- //end inner -->
             </div>
@@ -224,11 +272,11 @@
                             <div class="flightplan-settings-box-toggle">
                                 <i class="glyphicon glyphicon-cog"></i>
                             </div>
-                            <div class="flightplan-settings-content">
-                                <div class="flightplan-settings-item flightplan-settings-targetfundingdate">
+                            <div class="settings-box-content">
+                                <div class="settings-box-item">
                                     <span>Target funding year:</span> <select class="form-control" data-bind="options: flightPlan.flightPlanModel.targetFundingYears, value: flightPlan.flightPlanModel.targetFundingYear"></select>
                                 </div>
-                                <div class="flightplan-settings-item">
+                                <div class="settings-box-item">
                                     <span>Contributions:</span>
                                     <select class="form-control">
                                         <option>£60m (-40%)</option>
@@ -242,18 +290,18 @@
                                         <option>£140m (+40%)</option>
                                     </select>
                                 </div>
-                                <div class="flightplan-settings-item">
+                                <div class="settings-box-item">
                                     <span>Discount Basis:</span>
                                     <div class="radio">
                                         <label>
-                                            <input type="radio" name="flighplanBasis" checked>
-                                            Basis 1
+                                            <input type="radio" name="flightplanBasis" checked>
+                                            Technical Provision
                                         </label>
                                     </div>
                                     <div class="radio">
                                         <label>
-                                            <input type="radio" name="flighplanBasis">
-                                            Basis 2
+                                            <input type="radio" name="flightplanBasis">
+                                            Self Sufficiency
                                         </label>
                                     </div>
                                 </div>
@@ -285,6 +333,20 @@
             }, "slow").removeClass("active"), $(".flightplan-settings-box-toggle span").text("show")) : ($(".flightplan-settings-box").animate({
                 right: "0px"
             }, "slow").addClass("active"), $(".flightplan-settings-box-toggle span").text("hide")), !1
+        })
+    });
+
+    $(function () {
+        $(".risk-settings-box").animate({
+            left: "-229px"
+        }, "slow").removeClass("active");
+
+        $(".risk-settings-box-toggle").on("click", function () {
+            return $(".risk-settings-box").hasClass("active") ? ($(".risk-settings-box").animate({
+                left: "-229px"
+            }, "slow").removeClass("active"), $(".risk-settings-box-toggle span").text("show")) : ($(".risk-settings-box").animate({
+                left: "-29px"
+            }, "slow").addClass("active"), $(".risk-settings-box-toggle span").text("hide")), !1
         })
     });
 
@@ -457,6 +519,7 @@
                 return result;
             };
 
+
             self.displayChart = ko.computed(function () {
                 if (self.chartData().length === 0) return;
 
@@ -486,11 +549,11 @@
                 self.chartWrapper.displayFlightPlanLineChart(options);
             });
 
-            self.addOneToTargetFundingYear = function(){
+            self.addOneToTargetFundingYear = function () {
                 self.targetFundingYear(self.targetFundingYear() + 1);
             };
 
-            self.subtractOneFromTargetFundingYear = function(){
+            self.subtractOneFromTargetFundingYear = function () {
                 self.targetFundingYear(self.targetFundingYear() - 1);
             };
         };
