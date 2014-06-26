@@ -222,18 +222,42 @@
                         <div id="flightPlanChart" style="height: 400px;"></div>
                         <div class="flightplan-settings-box active">
                             <div class="flightPlanSlideOutContent">
-                                <div>
-                                    <span>Full funding date: <span data-bind="text: flightPlan.flightPlanModel.fullFundingYear"></span> </span>
-                                    <div class="btn-group btn-group-xs">
-                                        <button class="btn btn-info" type="button"><i class="glyphicon glyphicon-minus-sign"></i></button>
-                                        <button class="btn btn-info" type="button"><i class="glyphicon glyphicon-plus-sign"></i></button>
+                                <div class="flightplan-settings-item flightplan-settings-targetfundingdate">
+                                    <span>Target funding date:</span>
+                                    <div>
+                                        <span class="flightplan-settings-targetfundingdate-value" data-bind="text: flightPlan.flightPlanModel.targetFundingYear"></span>
+                                        <a class="flightplan-settings-button" data-bind="click: flightPlan.flightPlanModel.addOneToTargetFundingYear"><i class="glyphicon glyphicon-chevron-up"></i></a>
+                                        <a class="flightplan-settings-button" data-bind="click: flightPlan.flightPlanModel.subtractOneFromTargetFundingYear"><i class="glyphicon glyphicon-chevron-down"></i></a>
                                     </div>
                                 </div>
-                                <div>
+                                <div class="flightplan-settings-item">
                                     <span>Contributions:</span>
+                                    <select class="form-control">
+                                        <option>£60m (-40%)</option>
+                                        <option>£70m (-30%)</option>
+                                        <option>£80m (-20%)</option>
+                                        <option>£90m (-10%)</option>
+                                        <option selected>£100m</option>
+                                        <option>£110m (+10%)</option>
+                                        <option>£120m (+20%)</option>
+                                        <option>£130m (+30%)</option>
+                                        <option>£140m (+40%)</option>
+                                    </select>
                                 </div>
-                                <div>
-                                    <span>Discount Basis:<br/><br></span>
+                                <div class="flightplan-settings-item">
+                                    <span>Discount Basis:</span>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="flighplanBasis" checked>
+                                            Basis 1
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="flighplanBasis">
+                                            Basis 2
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                             <div class="flightplan-settings-box-toggle">
@@ -416,7 +440,7 @@
             self.chartWrapper = dependencies.chartWrapper || new irisHighChartWrapper();
 
             self.chartData = ko.observableArray([]);
-            self.fullFundingYear = ko.observable(2017);
+            self.targetFundingYear = ko.observable(2032);
 
             var seriesData = [
                 { name: 'Liabilities', color: '#2FABE9', data: []},
@@ -435,7 +459,7 @@
             var inMillions = function (num) {
                 var result = Math.round(num / 1000000);
                 return result;
-            }
+            };
 
             self.displayChart = ko.computed(function () {
                 if (self.chartData().length === 0) return;
@@ -465,6 +489,14 @@
 
                 self.chartWrapper.displayFlightPlanLineChart(options);
             });
+
+            self.addOneToTargetFundingYear = function(){
+                self.targetFundingYear(self.targetFundingYear() + 1);
+            };
+
+            self.subtractOneFromTargetFundingYear = function(){
+                self.targetFundingYear(self.targetFundingYear() - 1);
+            };
         };
 
         fp.ControlPanelModel = function () {

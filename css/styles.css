@@ -8,12 +8,12 @@
     right: 0px;
     width: 199px;
     top: 5%;
-    padding: 20px;
+    /*padding: 20px;*/
     z-index: 9999;
     border: 1px solid #2FABE9;
     border-right: none;
     border-radius: 2px 0px 0px 2px;
-    background-color: rgba(249, 249, 249, 0.9);
+    background-color: rgba(249, 249, 249, 0.92);
     -webkit-box-shadow: 1px 1px 3px 0px rgba(50, 50, 50, 0.5);
     -moz-box-shadow:    1px 1px 3px 0px rgba(50, 50, 50, 0.5);
     box-shadow:         1px 1px 3px 0px rgba(50, 50, 50, 0.5);
@@ -31,5 +31,33 @@
     padding-bottom: 5px;
     text-align: center;
     background-color: rgba(249, 249, 249, 0.99);
+    }
+
+.flightplan-settings-item {
+    padding: 10px;
+    border-top: 1px dashed #d5d5d5;
 }
 
+.flightplan-settings-targetfundingdate {
+    border-top: none;
+}
+
+.flightplan-settings-targetfundingdate-value {
+    font-weight: bold;
+    font-size: 14px;
+    padding: 5px;
+}
+
+.flightplan-settings-button {
+    padding: 2px 4px;
+    font-size: 90%;
+    color: #c0a16b;
+    white-space: nowrap;
+    background-color: #faf2cc;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.flightplan-settings-button:hover {
+    color: #0e90d2;
+}

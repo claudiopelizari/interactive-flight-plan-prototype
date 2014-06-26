@@ -464,7 +464,7 @@ var irisHighChartWrapper = function() {
                         symbol: 'circle',
                         fillColor: '#FFFFFF',
                         lineWidth: 2,
-                        radius: 3,
+                        radius: 2,
                         lineColor: null
                     }
                 }
