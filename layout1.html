@@ -769,6 +769,8 @@
             self.reset = function(){
                 self.controlPanel.controlPanelModel.reset();
             };
+
+            window.addEventListener('shake', self.reset(), false);
         };
 
         var vm = new fp.ViewModel();
@@ -776,18 +778,18 @@
         vm.flightPlan.flightPlanModel.chartData(fp.flightPlanData);
         ko.applyBindings(vm);
 
-        $(function () {
-            window.addEventListener('shake', shakeEventDidOccur, false);
-
-            //function to call when shake occurs
-            function shakeEventDidOccur () {
-
-                //put your own code here etc.
-                if (confirm("Reset the flight plan?")) {
-                    vm.reset();
-                }
-            }
-        });
+//        $(function () {
+//            window.addEventListener('shake', shakeEventDidOccur, false);
+//
+//            //function to call when shake occurs
+//            function shakeEventDidOccur () {
+//
+//                //put your own code here etc.
+//                if (confirm("Reset the flight plan?")) {
+//                    vm.reset();
+//                }
+//            }
+//        });
 
     </script>
 
