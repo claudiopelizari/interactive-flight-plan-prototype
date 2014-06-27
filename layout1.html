@@ -21,6 +21,8 @@
     <script src="js/bootstrap.js"></script>
     <script src="js/controlfrog-plugins.js"></script>
 
+    <script src="js/shake.js"></script>
+
     <!-- slider -->
     <link href="slider/css/slider.css" rel="stylesheet" />
     <script src="slider/js/bootstrap-slider.js"></script>
@@ -460,7 +462,21 @@
 
     <script>
 
+    $(function () {
+        window.addEventListener('shake', shakeEventDidOccur, false);
+
+        //function to call when shake occurs
+        function shakeEventDidOccur () {
+
+            //put your own code here etc.
+            if (confirm("Reset the flight plan?")) {
+
+            }
+        }
+    });
+
     $(function (){
+       //attach  click handler to collapsible settings panels
        $('#new-flightplan-settings-toggle').on('click', function () {
            $('#new-flightplan-settings-collapsible').collapse('toggle');
        });
@@ -468,13 +484,11 @@
         $('#new-risk-settings-toggle').on('click', function () {
             $('#new-risk-settings-collapsible').collapse('toggle');
         });
-    });
 
-    $(function () {
+        //hide the settings panels
         $('#new-risk-settings-collapsible').collapse('hide');
         $('#new-flightplan-settings-collapsible').collapse('hide');
     });
-
 
     $(function () {
         $('.flightplan-settings-box').animate({
