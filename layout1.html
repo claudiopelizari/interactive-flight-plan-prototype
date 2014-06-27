@@ -767,10 +767,12 @@
             };
 
             self.reset = function(){
-                self.controlPanel.controlPanelModel.reset();
+                if (confirm("Reset the flight plan?")) {
+                    self.controlPanel.controlPanelModel.reset();
+                }
             };
 
-            window.addEventListener('shake', self.reset(), false);
+            window.addEventListener('shake', self.reset, false);
         };
 
         var vm = new fp.ViewModel();
