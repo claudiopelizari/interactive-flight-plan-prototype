@@ -268,12 +268,8 @@
                                     <div class="new-settings-box-item">
                                         <span>Basis Risk:</span>
                                         <div class="btn-group btn-group-xs" data-toggle="buttons">
-                                            <label class="btn btn-info active">
-                                                <input type="radio" name="basisrisk" checked> On
-                                            </label>
-                                            <label class="btn btn-info">
-                                                <input type="radio" name="basisrisk"> Off
-                                            </label>
+                                            <button type="button" class="btn btn-info" data-bind="click: risk.riskModel.includeBasisRisk, css: { active: risk.riskModel.basisRisk() === true }">On</button>
+                                            <button type="button" class="btn btn-info" data-bind="click: risk.riskModel.excludeBasisRisk, css: { active: risk.riskModel.basisRisk() === false }">Off</button>
                                         </div>
                                     </div>
                                     <div class="new-settings-box-item">
@@ -310,17 +306,9 @@
                             <div class="settings-box-content">
                                 <div class="settings-box-item">
                                     <span>Basis risk:</span>
-                                    <div class="radio">
-                                        <label>
-                                            <input type="radio" name="basisRisk" checked>
-                                            Yes
-                                        </label>
-                                    </div>
-                                    <div class="radio">
-                                        <label>
-                                            <input type="radio" name="basisRisk">
-                                            No
-                                        </label>
+                                    <div class="btn-group btn-group-xs" data-toggle="buttons">
+                                        <button type="button" class="btn btn-info" data-bind="click: risk.riskModel.includeBasisRisk, css: { active: risk.riskModel.basisRisk() === true }">On</button>
+                                        <button type="button" class="btn btn-info" data-bind="click: risk.riskModel.excludeBasisRisk, css: { active: risk.riskModel.basisRisk() === false }">Off</button>
                                     </div>
                                 </div>
                                 <div class="settings-box-item">
@@ -462,18 +450,7 @@
 
     <script>
 
-    $(function () {
-        window.addEventListener('shake', shakeEventDidOccur, false);
 
-        //function to call when shake occurs
-        function shakeEventDidOccur () {
-
-            //put your own code here etc.
-            if (confirm("Reset the flight plan?")) {
-
-            }
-        }
-    });
 
     $(function (){
        //attach  click handler to collapsible settings panels
@@ -571,7 +548,7 @@
             self.chartData = ko.observableArray([]);
             self.riskTableOriginal = ko.observableArray([]);
             self.chartYAxisTitle = ko.observable('Percentage of Total Liabilities');
-
+            self.basisRisk = ko.observable(true);
 
             self.options = {
                 skip: 1,
@@ -581,10 +558,21 @@
                 na: '-'
             };
 
+            self.includeBasisRisk = function(){
+              self.basisRisk(true);
+            };
+
+            self.excludeBasisRisk = function(){
+                self.basisRisk(false);
+            };
 
             if (!dependencies) dependencies = {};
             self.chartWrapper = dependencies.chartWrapper || new irisHighChartWrapper();
 
+            self.reset = function () {
+                //reset basis risk to true
+                self.basisRisk(true);
+            };
 
             self.waterfallData = ko.computed(function () {
                 //var colours = ["#D94542", "#578BCA", "#819E43", "#B0C9F5", "#9EDAEB"];
@@ -602,7 +590,13 @@
                 ko.utils.arrayForEach(copyOfOriginalData, function (data) {
                     data.shift();
 
-                    if (data[0] !== null && diversificationFound === false) {
+                    var pushData = true;
+                    //do not push data if basisRisk is false and data in current iteration is Basis Risk related
+                    if (self.basisRisk() === false && (data[0] === 'Interest Rate Basis Risk' || data[0] === 'Inflation Basis Risk')){
+                        pushData = false;
+                    }
+
+                    if (data[0] !== null && diversificationFound === false && pushData) {
                         if (data[2] !== currentCategory) {
                             colourIndex += 1;
                             currentCategory = data[2];
@@ -637,12 +631,20 @@
 
                 ko.utils.arrayForEach(copyOfOriginalData, function (data) {
                     data.shift();
-                    if (data[0] !== "Total" && data[0] !== null) {
-                        result.push({ y: 0 });
-                    } else if (data[0] === "Total") {
-                        var y = parseFloat(data[1]);
-                        y *= 100;
-                        result.push({ y: y });
+
+                    var pushData = true;
+                    //do not push data if basisRisk is false and data in current iteration is Basis Risk related
+                    if (self.basisRisk() === false && (data[0] === 'Interest Rate Basis Risk' || data[0] === 'Inflation Basis Risk')){
+                        pushData = false;
+                    }
+                    if (pushData) {
+                        if (data[0] !== "Total" && data[0] !== null) {
+                            result.push({ y: 0 });
+                        } else if (data[0] === "Total") {
+                            var y = parseFloat(data[1]);
+                            y *= 100;
+                            result.push({ y: y });
+                        }
                     }
                 });
 
@@ -659,6 +661,7 @@
                     independantData: self.totalSeriesData(),
                     yAxisTitle: self.chartYAxisTitle(),
                     xAxisTitle: "Risk Type",
+                    xAxisRotation: -45,
                     dataLabels: true
                 };
 
@@ -744,6 +747,13 @@
             self.totalAssets = ko.computed(function () {
                 return self.equities() + self.gilts() + self.swaps() + self.volControlledEquities();
             });
+
+            self.reset = function(){
+                self.equities(30);
+                self.gilts(60);
+                self.swaps(80);
+                self.volControlledEquities(50);
+            }
         };
         
 
@@ -769,12 +779,29 @@
             self.flightPlan = {
                 flightPlanModel: new fp.FlightPlanModel({ chartWrapper: new irisHighChartWrapper() })
             };
+
+            self.reset = function(){
+                if (confirm("Reset the flight plan?")) {
+                    self.controlPanel.controlPanelModel.reset();
+                    self.risk.riskModel.reset();
+                }
+            };
         };
 
         var vm = new fp.ViewModel();
         vm.risk.riskModel.chartData(fp.riskData);
         vm.flightPlan.flightPlanModel.chartData(fp.flightPlanData);
+
+        window.addEventListener('shake', vm.reset, false);
+
         ko.applyBindings(vm);
+
+//        $(function () {
+//            //function to call when shake occurs
+//            function shakeEventDidOccur () {
+//                vm.reset();
+//            }
+//        });
 
     </script>
 

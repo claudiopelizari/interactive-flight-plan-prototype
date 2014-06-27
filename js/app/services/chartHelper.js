@@ -15,6 +15,9 @@ var irisHighChartWrapper = function() {
                 type: 'category',
                 title: {
                     text: options.xAxisTitle || ""
+                },
+                labels: {
+                    rotation: options.xAxisRotation || ""
                 }
             },
 
