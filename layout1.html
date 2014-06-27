@@ -462,18 +462,7 @@
 
     <script>
 
-    $(function () {
-        window.addEventListener('shake', shakeEventDidOccur, false);
 
-        //function to call when shake occurs
-        function shakeEventDidOccur () {
-
-            //put your own code here etc.
-            if (confirm("Reset the flight plan?")) {
-
-            }
-        }
-    });
 
     $(function (){
        //attach  click handler to collapsible settings panels
@@ -744,6 +733,13 @@
             self.totalAssets = ko.computed(function () {
                 return self.equities() + self.gilts() + self.swaps() + self.volControlledEquities();
             });
+
+            self.reset = function(){
+                self.equities(30);
+                self.gilts(60);
+                self.swaps(80);
+                self.volControlledEquities(50);
+            }
         };
         
 
@@ -769,12 +765,29 @@
             self.flightPlan = {
                 flightPlanModel: new fp.FlightPlanModel({ chartWrapper: new irisHighChartWrapper() })
             };
+
+            self.reset = function(){
+                self.controlPanel.controlPanelModel.reset();
+            };
         };
 
         var vm = new fp.ViewModel();
         vm.risk.riskModel.chartData(fp.riskData);
         vm.flightPlan.flightPlanModel.chartData(fp.flightPlanData);
         ko.applyBindings(vm);
+
+        $(function () {
+            window.addEventListener('shake', shakeEventDidOccur, false);
+
+            //function to call when shake occurs
+            function shakeEventDidOccur () {
+
+                //put your own code here etc.
+                if (confirm("Reset the flight plan?")) {
+                    vm.reset();
+                }
+            }
+        });
 
     </script>
 
