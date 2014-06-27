@@ -74,3 +74,28 @@
     -moz-box-shadow:    1px 1px 3px 0px rgba(50, 50, 50, 0.5);
     box-shadow:         1px 1px 3px 0px rgba(50, 50, 50, 0.5);
 }
+
+.new-settings-box {
+    margin: -10px auto 10px auto;
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content;         /* not fully supported, use another method if no browser support */
+    /*margin: -10px 10% 10px 10%;*/
+    border: 1px solid #2FABE9;
+    border-top: none;
+    border-radius: 0px 0px 15px 15px;
+    background-color: rgba(249, 249, 249, 0.92);
+    -webkit-box-shadow: 1px 1px 3px 0px rgba(50, 50, 50, 0.5);
+    -moz-box-shadow:    1px 1px 3px 0px rgba(50, 50, 50, 0.5);
+    box-shadow:         1px 1px 3px 0px rgba(50, 50, 50, 0.5);
+}
+
+.new-settings-box-item {
+    padding: 10px;
+    border-left: 1px dashed #d5d5d5;
+    float: left;
+}
+
+.new-settings-box-content .new-settings-box-item:first-child {
+    border-left: none;
+}

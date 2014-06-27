@@ -202,10 +202,43 @@
                 <!-- bottom left -->
                 <div class="inner">
                     <header>
-                        <p><span></span>Risk</p>
+                            <p><span></span>Risk<a class="pull-right" data-toggle="collapse" data-target="#new-risk-settings">Settings</a></p>
                     </header>
-
                     <div class="content">
+                        <div id="new-risk-settings" class="new-settings-box collapse in">
+                            <div class="container-fluid new-settings-box-content">
+                                <div class="row">
+                                    <div class="new-settings-box-item">
+                                        <span>Basis Risk:</span>
+                                        <div class="btn-group btn-group-xs" data-toggle="buttons">
+                                            <label class="btn btn-info active">
+                                                <input type="radio" name="basisrisk" checked> On
+                                            </label>
+                                            <label class="btn btn-info">
+                                                <input type="radio" name="basisrisk"> Off
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="new-settings-box-item">
+                                        <span>Label:</span>
+                                        <div class="btn-group btn-group-xs" data-toggle="buttons">
+                                            <label class="btn btn-info active">
+                                                <input type="radio" name="RAR" checked> fRAR
+                                            </label>
+                                            <label class="btn btn-info">
+                                                <input type="radio" name="RAR"> RAR
+                                            </label>
+                                            <label class="btn btn-info">
+                                                <input type="radio" name="RAR"> VAR
+                                            </label>
+                                            <label class="btn btn-info">
+                                                <input type="radio" name="RAR"> CAR
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div id="riskChart"></div>
                         <div class="risk-settings-box active">
                             <div class="risk-settings-box-toggle">
@@ -263,10 +296,48 @@
                 <!-- bottom right -->
                 <div class="inner">
                     <header>
-                        <p><span></span>Flight Plan</p>
+                        <p><span></span>Flight Plan<a class="pull-right" data-toggle="collapse" data-target="#new-flightplan-settings">Settings</a></p>
                     </header>
-
                     <div class="content">
+                        <div id="new-flightplan-settings" class="new-settings-box collapse in">
+                            <div class="container-fluid new-settings-box-content">
+                                <div class="row">
+                                    <div class="new-settings-box-item">
+                                        <span>Target funding year:</span>
+                                        <select class="form-control" data-bind="options: flightPlan.flightPlanModel.targetFundingYears, value: flightPlan.flightPlanModel.targetFundingYear"></select>
+                                    </div>
+                                    <div class="new-settings-box-item">
+                                        <span>Contributions:</span>
+                                        <select class="form-control">
+                                            <option>£60m (-40%)</option>
+                                            <option>£70m (-30%)</option>
+                                            <option>£80m (-20%)</option>
+                                            <option>£90m (-10%)</option>
+                                            <option selected>£100m</option>
+                                            <option>£110m (+10%)</option>
+                                            <option>£120m (+20%)</option>
+                                            <option>£130m (+30%)</option>
+                                            <option>£140m (+40%)</option>
+                                        </select>
+                                    </div>
+                                    <div class="new-settings-box-item">
+                                        <span>Discount Basis:</span>
+                                        <div class="radio">
+                                            <label>
+                                                <input type="radio" name="flightplanBasis" checked>
+                                                Technical Provision
+                                            </label>
+                                        </div>
+                                        <div class="radio">
+                                            <label>
+                                                <input type="radio" name="flightplanBasis">
+                                                Self Sufficiency
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div id="flightPlanChart" style="height: 400px;"></div>
                         <div class="flightplan-settings-box active">
                             <div class="flightplan-settings-box-toggle">
@@ -323,30 +394,43 @@
     <script>
 
     $(function () {
-        $(".flightplan-settings-box").animate({
-            right: "-200px"
-        }, "slow").removeClass("active");
+        $('#new-risk-settings').collapse('hide');
+        $('#new-flightplan-settings').collapse('hide');
+    });
 
-        $(".flightplan-settings-box-toggle").on("click", function () {
-            return $(".flightplan-settings-box").hasClass("active") ? ($(".flightplan-settings-box").animate({
-                right: "-200px"
-            }, "slow").removeClass("active"), $(".flightplan-settings-box-toggle span").text("show")) : ($(".flightplan-settings-box").animate({
-                right: "0px"
-            }, "slow").addClass("active"), $(".flightplan-settings-box-toggle span").text("hide")), !1
+    $(function () {
+        $('.flightplan-settings-box').animate({
+            right: "-200px"
+        }, 'slow').removeClass('active');
+
+        $('.flightplan-settings-box-toggle').on('click', function () {
+            if ($('.flightplan-settings-box').hasClass('active')){
+                $('.flightplan-settings-box').animate({
+                    right: '-200px'
+                }, 'slow').removeClass('active')
+            }else{
+                $('.flightplan-settings-box').animate({
+                    right: '0px'
+                }, 'slow').addClass('active')
+            }
         })
     });
 
     $(function () {
-        $(".risk-settings-box").animate({
-            left: "-229px"
-        }, "slow").removeClass("active");
+        $('.risk-settings-box').animate({
+            left: '-229px'
+        }, 'slow').removeClass('active');
 
-        $(".risk-settings-box-toggle").on("click", function () {
-            return $(".risk-settings-box").hasClass("active") ? ($(".risk-settings-box").animate({
-                left: "-229px"
-            }, "slow").removeClass("active"), $(".risk-settings-box-toggle span").text("show")) : ($(".risk-settings-box").animate({
-                left: "-29px"
-            }, "slow").addClass("active"), $(".risk-settings-box-toggle span").text("hide")), !1
+        $('.risk-settings-box-toggle').on('click', function () {
+            if ($('.risk-settings-box').hasClass('active')){
+                $('.risk-settings-box').animate({
+                    left: '-229px'
+                }, 'slow').removeClass('active')
+            }else{
+                $('.risk-settings-box').animate({
+                    left: '-29px'
+                }, 'slow').addClass('active')
+            }
         })
     });
 
