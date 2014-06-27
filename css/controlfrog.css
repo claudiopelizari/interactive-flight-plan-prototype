@@ -117,6 +117,12 @@ a:hover {
   height: 90%;
   position: relative; }
 
+.prmf-value {
+  font-size: 2em; }
+
+.table-prmf {
+  width: 95%; }
+
 @media (min-width: 768px) {
   .row [class*="col"] .inner {
     height: 70%; }
