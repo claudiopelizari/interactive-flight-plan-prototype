@@ -76,11 +76,11 @@
 }
 
 .new-settings-box {
-    margin: -10px auto 10px auto;
-    width: -webkit-fit-content;
-    width: -moz-fit-content;
-    width: fit-content;         /* not fully supported, use another method if no browser support */
-    /*margin: -10px 10% 10px 10%;*/
+    /*    margin: -10px auto 10px auto;
+        width: -webkit-fit-content;
+        width: -moz-fit-content;
+        width: fit-content;*/         /* not fully supported, use another method if no browser support */
+    margin: -10px 10% 10px 10%;
     border: 1px solid #2FABE9;
     border-top: none;
     border-radius: 0px 0px 15px 15px;
@@ -98,4 +98,14 @@
 
 .new-settings-box-content .new-settings-box-item:first-child {
     border-left: none;
+}
+
+.new-settings-toggle{
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+}
+
+.new-settings-toggle:hover{
+    color: #2FABE9;
 }

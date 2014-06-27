@@ -257,12 +257,12 @@
                 <!-- bottom left -->
                 <div class="inner">
                     <header>
-                            <p><span></span>Risk<a class="pull-right" data-toggle="collapse" data-target="#new-risk-settings">Settings</a></p>
+                            <p><span></span>Risk<a class="pull-right" data-toggle="collapse" data-target="#new-risk-settings-collapsible">Settings</a></p>
                     </header>
                     <div class="content">
-                        <div id="new-risk-settings" class="new-settings-box collapse in">
+                        <div class="new-settings-box">
                             <div class="container-fluid new-settings-box-content">
-                                <div class="row">
+                                <div id="new-risk-settings-collapsible" class="row collapse in">
                                     <div class="new-settings-box-item">
                                         <span>Basis Risk:</span>
                                         <div class="btn-group btn-group-xs" data-toggle="buttons">
@@ -290,6 +290,12 @@
                                                 <input type="radio" name="RAR"> CAR
                                             </label>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="new-settings-toggle">
+                                        <!--<button type="button" class="btn btn-info btn-xs" data-toggle="collapse" data-target="#new-flightplan-settings-collapsible">Hide/Show</button>-->
+                                        <i id="new-risk-settings-toggle" class="glyphicon glyphicon-cog"></i>
                                     </div>
                                 </div>
                             </div>
@@ -351,12 +357,12 @@
                 <!-- bottom right -->
                 <div class="inner">
                     <header>
-                        <p><span></span>Flight Plan<a class="pull-right" data-toggle="collapse" data-target="#new-flightplan-settings">Settings</a></p>
+                        <p><span></span>Flight Plan<a class="pull-right" data-toggle="collapse" data-target="#new-flightplan-settings-collapsible">Settings</a></p>
                     </header>
                     <div class="content">
-                        <div id="new-flightplan-settings" class="new-settings-box collapse in">
+                        <div class="new-settings-box">
                             <div class="container-fluid new-settings-box-content">
-                                <div class="row">
+                                <div id="new-flightplan-settings-collapsible" class="row collapse in">
                                     <div class="new-settings-box-item">
                                         <span>Target funding year:</span>
                                         <select class="form-control" data-bind="options: flightPlan.flightPlanModel.targetFundingYears, value: flightPlan.flightPlanModel.targetFundingYear"></select>
@@ -389,6 +395,12 @@
                                                 Self Sufficiency
                                             </label>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="new-settings-toggle">
+                                        <!--<button type="button" class="btn btn-info btn-xs" data-toggle="collapse" data-target="#new-flightplan-settings-collapsible">Hide/Show</button>-->
+                                        <i id="new-flightplan-settings-toggle" class="glyphicon glyphicon-cog"></i>
                                     </div>
                                 </div>
                             </div>
@@ -448,10 +460,21 @@
 
     <script>
 
-    $(function () {
-        $('#new-risk-settings').collapse('hide');
-        $('#new-flightplan-settings').collapse('hide');
+    $(function (){
+       $('#new-flightplan-settings-toggle').on('click', function () {
+           $('#new-flightplan-settings-collapsible').collapse('toggle');
+       });
+
+        $('#new-risk-settings-toggle').on('click', function () {
+            $('#new-risk-settings-collapsible').collapse('toggle');
+        });
     });
+
+    $(function () {
+        $('#new-risk-settings-collapsible').collapse('hide');
+        $('#new-flightplan-settings-collapsible').collapse('hide');
+    });
+
 
     $(function () {
         $('.flightplan-settings-box').animate({
