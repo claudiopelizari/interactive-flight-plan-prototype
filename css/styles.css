@@ -197,6 +197,11 @@
     border-top: none;
 }
 
+.table > tbody > tr > th,
+.table > tbody > tr > td {
+    vertical-align: middle !important;
+}
+
 .settings-helper-text {
     font-size: 11px;
     cursor: pointer;
