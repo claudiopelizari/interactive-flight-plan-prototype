@@ -189,4 +189,8 @@
     padding-top: 10px;
 }
 
+.table-borderless-first-row.table > tbody > tr:first-child > th,
+.table-borderless-first-row.table > tbody > tr:first-child > td {
+    border-top: none;
+}
 
