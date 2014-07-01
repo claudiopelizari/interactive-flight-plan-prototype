@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <title>Controlfrog - Meaningful Metrics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="css/styles.css" rel="stylesheet">
+    <link href="css/controlfrog.css" rel="stylesheet" media="screen">
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+
+    <link href="favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+
+    <script src="//code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/easypiechart.js"></script>
+    <script src="js/gauge.js"></script>
+    <script src="js/chart.js"></script>
+    <script src="js/jquery.sparklines.js"></script>
+    <script src="js/bootstrap.js"></script>
+
+    <script src="js/shake.js"></script>
+
+    <!-- snap.js -->
+    <link href="css/snap.css" rel="stylesheet">
+    <script src="js/snap.js"></script>
+
+    <!-- slider -->
+    <link href="slider/css/slider.css" rel="stylesheet"/>
+    <script src="slider/js/bootstrap-slider.js"></script>
+    <script src="js/modernizr-dev.js"></script>
+
+    <!-- gridster -->
+    <link href="css/jquery.gridster.css" rel="stylesheet"/>
+    <script src="js/jquery.gridster.js"></script>
+
+    <!--[if lt IE 9]>
+    <script src="js/respond.min.js"></script>
+    <script src="js/excanvas.min.js"></script>
+    <![endif]-->
+
+
+    <script>
+        var themeColour = 'white';
+    </script>
+    <script src="js/controlfrog.js"></script>
+</head>
+<body>
+
+    <div class="snap-drawers">
+        <div class="snap-drawer snap-drawer-left">
+                <h3>Flight plan settings</h3>
+                <ul>
+                    <li></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="content" class="snap-content">
+        <div class="container-fluid header-bar">
+            <span id="open-left" class="header-bar-menu-toggle"><i class="glyphicon glyphicon-th "></i></span>
+            <h3>Redington <i class="glyphicon glyphicon-chevron-right"></i> Flight Plan</h3>
+        </div>
+
+
+        <div class="gridster">
+            <ul>
+                <li id="li1" data-row="1" data-col="1" data-sizex="4" data-sizey="1">
+                    <div class="inner">
+                        <header>
+                            <p><span></span>PRMF</p>
+                        </header>
+
+                        <div class="content">
+
+                            <table class="table table-prmf">
+
+                                <tr>
+                                    <th class="cf-txts-txt m-red">Flight Plan</th>
+                                    <td class="m-red prmf-value">
+                                        Required Return: 84 bps<br/>
+                                        Expected Return: 146 bps
+                                    </td>
+                                    <td class="cf-bars-bar m-red mb prmf-status">
+
+                                        <span class="glyphicon glyphicon-exclamation-sign prmf-icon"></span>
+
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th class="cf-txts-txt m-amber">Risk Budget</th>
+                                    <td class="m-amber prmf-value">
+                                        RAR 9%
+                                    </td>
+                                    <td class="cf-bars-bar m-amber mb prmf-status">
+
+                                        <span class="glyphicon glyphicon-minus-sign prmf-icon"></span>
+
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th class="cf-txts-txt m-amber">Hedge Ratio</th>
+                                    <td class="m-amber prmf-value">
+                                        Hedge Ratio: 70%<br/>
+                                        Funding Ratio: 69%
+                                    </td>
+                                    <td class="cf-bars-bar m-amber mb prmf-status">
+
+                                        <span class="glyphicon glyphicon-minus-sign prmf-icon"></span>
+
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <th class="cf-txts-txt m-green">Collateral</th>
+                                    <td class="m-green prmf-value">
+                                        £444M
+                                    </td>
+                                    <td class="cf-bars-bar m-green mb prmf-status">
+
+                                        <span class="glyphicon glyphicon-ok-sign prmf-icon"></span>
+
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+                </li>
+                <li id="li2" data-row="2" data-col="1" data-sizex="3" data-sizey="1">
+                    <div class="inner">
+                        <header>
+                            <p><span></span>Risk</p>
+                        </header>
+                        <div class="content">
+                            <div id="riskChart"></div>
+                        </div>
+                    </div>
+                </li>
+                <li id="li3" data-row="1" data-col="5" data-sizex="2" data-sizey="1">
+                    <div class="inner">
+                        <header>
+                            <p><span></span>Control Panel</p>
+                        </header>
+                        <div class="content">
+                            <div id="physicalAssetsContainer" class="panel panel-default">
+                                <div class="panel-heading">Physical Assets</div>
+                                <div class="panel-body">
+                                    <div class="row asset-type-row">
+                                        <div class="col-xs-2">Equities</div>
+                                        <div class="col-xs-9">
+                                            <input type="text"
+                                                   data-bind="sliderValue: { value: controlPanel.controlPanelModel.equities, step: 10, max: 100 }"/>
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <span data-bind="text: controlPanel.controlPanelModel.equities"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row asset-type-row">
+                                        <div class="col-xs-2">Gilts</div>
+                                        <div class="col-xs-9">
+                                            <input type="text"
+                                                   data-bind="sliderValue: { value: controlPanel.controlPanelModel.gilts, step: 10, max: 100 }"/>
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <span data-bind="text: controlPanel.controlPanelModel.gilts"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="syntheticAssetsContainer" class="panel panel-default">
+                                <div class="panel-heading">Synthetic Assets</div>
+                                <div class="panel-body">
+                                    <div class="row asset-type-row">
+                                        <div class="col-xs-2">Swaps</div>
+                                        <div class="col-xs-9">
+                                            <input type="text"
+                                                   data-bind="sliderValue: { value: controlPanel.controlPanelModel.swaps, step: 10, max: 100 }"/>
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <span data-bind="text: controlPanel.controlPanelModel.swaps"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row asset-type-row">
+                                        <div class="col-xs-2">Vol Controlled Equities</div>
+                                        <div class="col-xs-9">
+                                            <input type="text"
+                                                   data-bind="sliderValue: { value: controlPanel.controlPanelModel.volControlledEquities, step: 10, max: 100 }"/>
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <span data-bind="text: controlPanel.controlPanelModel.volControlledEquities"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    Total: <span data-bind="text: controlPanel.controlPanelModel.totalAssets"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li id="li4" data-row="2" data-col="4" data-sizex="3" data-sizey="1">
+                    <div class="inner">
+                        <header>
+                            <p><span></span>Flight Plan</p>
+                        </header>
+                        <div class="content">
+                            <div id="flightPlanChart"></div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        <div>
+
+            <div class="row"><!-- Top row -->
+                <div class="col-sm-6">
+                    <!-- top left -->
+
+                    <!-- //end inner -->
+                </div>
+
+                <div class="col-sm-6">
+                    <!-- top right -->
+
+                    <!-- //end inner -->
+
+                </div>
+
+                </div>
+                <div class="row"><!-- Bottom row -->
+
+                <div class="col-sm-6">
+                    <!-- bottom left -->
+
+                    <!-- //end inner -->
+                </div>
+
+                <div class="col-sm-6">
+                    <!-- bottom right -->
+
+                    <!-- //end inner -->
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/highcharts-more.js"></script>
+
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/knockout/3.1.0/knockout-min.js"></script>
+    <script src="js/app/services/chartHelper.js"></script>
+
+    <script>
+
+    //snapper js code
+    var snapper = new Snap({
+        element: document.getElementById('content'),
+        disable: 'right'
+    });
+
+    var toggleLeftButton = document.getElementById('open-left');
+    toggleLeftButton.addEventListener('click', function () {
+        if (snapper.state().state == 'left') {
+            snapper.close();
+        } else {
+            snapper.open('left');
+        }
+    });
+
+    //gridster code
+    $(function(){
+        var widgetMargin = 10;
+        var maxColumns = 6;
+        var maxRows = 2;
+
+        var widgetDimensions = function (){
+            var maxWidth = $('#content').width();
+            var maxHeight = $('#content').height();
+            return {
+                width: Math.floor((maxWidth / maxColumns) - (widgetMargin * 2)) - 10,
+                height: Math.floor((maxHeight / maxRows) - (widgetMargin * 2)) - 10
+            };
+        };
+
+        var dimensions = widgetDimensions();
+
+        var gridster = $('.gridster ul').gridster({
+            widget_margins: [widgetMargin, widgetMargin],
+            widget_base_dimensions: [dimensions.width, dimensions.height]
+        }).data('gridster');
+        //call window resize so that highchart widths are constrained to parent item (unknown before widgets are loaded)
+        //$(window).resize();
+
+        var resizeGridster = function () {
+            var myDimenstion = widgetDimensions();
+            gridster.resize_widget_dimensions({
+               widget_base_dimensions: [myDimenstion.width, myDimenstion.height]
+            });
+
+            //redraw charts
+            Highcharts.charts[0].reflow();
+        };
+
+        $(window).on('resize load', resizeGridster);
+    });
+
+    ko.bindingHandlers.sliderValue = {
+        init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+            var params = valueAccessor();
+
+            //ensure valueAccessor is either an observable item or contains a 'value' item
+            if (!(ko.isObservable(params) || params['value'])) {
+                throw "You need to define an observable value for the sliderValue. Either pass the observable directly or in the 'value' field in the parameters";
+            }
+
+            var valueObservable;
+            if (ko.isObservable(params)) {       //if observable, create slider using params directly
+                valueObservable = params;
+                $(element).slider({value: ko.unwrap(params)});
+            } else {                              //otherwise, replace params['value'] with the actual value and create slider using set of parameters
+                valueObservable = params['value'];
+                params['value'] = ko.unwrap(valueObservable);
+                $(element).slider(params);
+            }
+
+            $(element).on('slide', function (ev) {
+                valueObservable(ev.value);
+            });
+        },
+        update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+            var modelValue = valueAccessor();
+            var valueObservable;
+            if (ko.isObservable(modelValue)) {
+                valueObservable = modelValue;
+            } else {
+                valueObservable = modelValue['value'];
+            }
+
+            $(element).slider('setValue', valueObservable());
+        }
+    };
+
+    var fp = fp || {};
+
+    fp.RiskModel = function (dependencies) {
+        var self = this;
+
+        self.colours = ["#bdea74", "#eae874", "#2FABE9", "#FA5833"];
+        self.chartData = ko.observableArray([]);
+        self.riskTableOriginal = ko.observableArray([]);
+        self.chartYAxisTitle = ko.observable('Percentage of Total Liabilities');
+        self.basisRisk = ko.observable(true);
+
+        self.options = {
+            skip: 1,
+            decimalPlaces: 2,
+            drilldown: 'byName',
+            drilldownColumnIndex: 1,
+            na: '-'
+        };
+
+        self.includeBasisRisk = function () {
+            self.basisRisk(true);
+        };
+
+        self.excludeBasisRisk = function () {
+            self.basisRisk(false);
+        };
+
+        if (!dependencies) dependencies = {};
+        self.chartWrapper = dependencies.chartWrapper || new irisHighChartWrapper();
+
+        self.reset = function () {
+            //reset basis risk to true
+            self.basisRisk(true);
+        };
+
+        self.waterfallData = ko.computed(function () {
+            //var colours = ["#D94542", "#578BCA", "#819E43", "#B0C9F5", "#9EDAEB"];
+            var colourIndex = -1;
+            var currentCategory = "";
+            var result = [];
+            if (self.chartData().length === 0) return result;
+
+            var stringData = ko.utils.stringifyJson(self.chartData());
+            var copyOfOriginalData = JSON.parse(stringData);
+            copyOfOriginalData.shift();
+
+            var diversificationFound = false;
+
+            ko.utils.arrayForEach(copyOfOriginalData, function (data) {
+                data.shift();
+
+                var pushData = true;
+                //do not push data if basisRisk is false and data in current iteration is Basis Risk related
+                if (self.basisRisk() === false && (data[0] === 'Interest Rate Basis Risk' || data[0] === 'Inflation Basis Risk')) {
+                    pushData = false;
+                }
+
+                if (data[0] !== null && diversificationFound === false && pushData) {
+                    if (data[2] !== currentCategory) {
+                        colourIndex += 1;
+                        currentCategory = data[2];
+                    }
+                    var y = parseFloat(data[1]);
+                    y *= 100;
+                    if (data[0] === "Diversification") {
+                        diversificationFound = true;
+                        var y1 = parseFloat(y.toFixed(1)) - (parseFloat(y.toFixed(2)) * 2);
+                        //result.push({ name: data[0], y: y1, color: colours[colourIndex] });
+                        result.push({ name: data[0], y: y1 });
+                    } else {
+                        //result.push({ name: data[0], y: parseFloat(y.toFixed(2)), color: colours[colourIndex] });
+                        result.push({ name: data[0], y: parseFloat(y.toFixed(2)) });
+                    }
+                }
+            });
+
+            //result.push({ name: 'Total', y: 0, color: colours[colourIndex += 1] });
+            result.push({ name: 'Total', y: 0 });
+
+            return result;
+        });
+
+        self.totalSeriesData = ko.computed(function () {
+            var result = [];
+            if (self.chartData().length === 0) return result;
+
+            var stringData = ko.utils.stringifyJson(self.chartData());
+            var copyOfOriginalData = JSON.parse(stringData);
+            copyOfOriginalData.shift();
+
+            ko.utils.arrayForEach(copyOfOriginalData, function (data) {
+                data.shift();
+
+                var pushData = true;
+                //do not push data if basisRisk is false and data in current iteration is Basis Risk related
+                if (self.basisRisk() === false && (data[0] === 'Interest Rate Basis Risk' || data[0] === 'Inflation Basis Risk')) {
+                    pushData = false;
+                }
+                if (pushData) {
+                    if (data[0] !== "Total" && data[0] !== null) {
+                        result.push({ y: 0 });
+                    } else if (data[0] === "Total") {
+                        var y = parseFloat(data[1]);
+                        y *= 100;
+                        result.push({ y: y });
+                    }
+                }
+            });
+
+            return result;
+        });
+
+        self.displayChart = ko.computed(function () {
+            if (self.waterfallData().length === 0) return;
+            if (self.totalSeriesData().length === 0) return;
+
+            var options = {
+                chartId: "#riskChart",
+                waterFallData: self.waterfallData(),
+                independantData: self.totalSeriesData(),
+                yAxisTitle: self.chartYAxisTitle(),
+                xAxisTitle: "Risk Type",
+                xAxisRotation: -45,
+                dataLabels: true
+            };
+
+            self.chartWrapper.displayWaterfallChart(options);
+        });
+    };
+
+    fp.FlightPlanModel = function (dependencies) {
+        var self = this;
+
+        if (!dependencies) dependencies = {};
+        self.chartWrapper = dependencies.chartWrapper || new irisHighChartWrapper();
+
+        self.chartData = ko.observableArray([]);
+        self.targetFundingYear = ko.observable(2030);
+        self.targetFundingYears = ko.observableArray([2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036]);
+
+        var seriesData = [
+            { name: 'Liabilities', color: '#2FABE9', data: []},
+            { name: 'Required Return', color: '#FA5833', data: [] },
+            { name: 'Expected Return', color: '#008000', data: [], dashStyle: 'shortdash' }
+        ];
+
+        var options = {
+            renderTo: '#flightPlanChart',
+            lineSeriesData: seriesData,
+            yAxisTitle: "GBP Millions",
+            xAxisTitle: "Date",
+            dataLabels: true
+        };
+
+        var inMillions = function (num) {
+            var result = Math.round(num / 1000000);
+            return result;
+        };
+
+
+        self.displayChart = ko.computed(function () {
+            if (self.chartData().length === 0) return;
+
+            ko.utils.arrayForEach(self.chartData(), function (item, i) {
+                if (item[0] !== 'Date') {   //ignore if first item in array is 'Date' (this is the header)
+                    var stamp = moment.utc(item[0]);
+                    if (stamp != undefined) {
+                        var rr = [stamp.unix() * 1000 + 1000, inMillions(parseInt(item[1]))];
+                        var l = [stamp.unix() * 1000 + 1000, inMillions(parseInt(item[2]))];
+
+
+                        //fake expected return data for now
+                        var erDummyShift = 0;
+                        if (i < self.chartData().length - 1) {
+                            var erDummyShift = Math.floor(Math.random() * 50000000);
+                            erDummyShift *= Math.floor(Math.random() * 2) == 1 ? 1 : -1;
+                        }
+                        var er = [stamp.unix() * 1000 + 1000, inMillions(parseInt(item[1]) + erDummyShift)];
+
+                        seriesData[0].data.push(l);
+                        seriesData[1].data.push(rr);
+                        seriesData[2].data.push(er);
+                    }
+                }
+            });
+
+            self.chartWrapper.displayFlightPlanLineChart(options);
+        });
+
+        self.addOneToTargetFundingYear = function () {
+            self.targetFundingYear(self.targetFundingYear() + 1);
+        };
+
+        self.subtractOneFromTargetFundingYear = function () {
+            self.targetFundingYear(self.targetFundingYear() - 1);
+        };
+    };
+
+    fp.ControlPanelModel = function () {
+        var self = this;
+
+        self.equities = ko.observable(30);
+        self.gilts = ko.observable(60);
+        self.swaps = ko.observable(80);
+        self.volControlledEquities = ko.observable(50);
+        self.totalAssets = ko.computed(function () {
+            return self.equities() + self.gilts() + self.swaps() + self.volControlledEquities();
+        });
+
+        self.reset = function () {
+            self.equities(30);
+            self.gilts(60);
+            self.swaps(80);
+            self.volControlledEquities(50);
+        }
+    };
+
+
+    fp.riskData = [
+        ["Date", "Risk Type", "Percentage of Total Liabilities", "Category", null],
+        ["31 January 2014", "Equity Risk", "0.010765388", "Asset Risk", null],
+        ["31 January 2014", "Alternative Risk", "0.00533794", "Asset Risk", null],
+        ["31 January 2014", "FX Risk", "0.000576727", "Asset Risk", null],
+        ["31 January 2014", "Credit Risk", "0.026769249", "Asset Risk", null],
+        ["31 January 2014", "Insurance Risk", "0.006609667", "Asset Risk", null],
+        ["31 January 2014", "Interest Rate Risk", "0.012016951", "Liability Risk", null],
+        ["31 January 2014", "Inflation Risk", "0.019474715", "Liability Risk", null],
+        ["31 January 2014", "Interest Rate Basis Risk", "0.028957407", "Basis Risk", null],
+        ["31 January 2014", "Inflation Basis Risk", "0.031308809", "Basis Risk", null],
+        ["31 January 2014", "Diversification", "0.076792724", "Diversification", null],
+        ["31 January 2014", "Total", "0.06502413", "Total", null]
+    ];
+
+    fp.flightPlanData = [
+        ["Date", "GF Asset (Gilts +177bps)", "GF Liability (Gilt flat)", null, null],
+        ["28 June 2013", "1419816589", "1824449370", null, null],
+        ["30 September 2013", "1416916182", "1818554559", null, null],
+        ["30 June 2014", "1412647751", "1793890195", null, null],
+        ["30 June 2015", "1417703004", "1769838176", null, null],
+        ["30 June 2016", "1429176417", "1754250356", null, null],
+        ["30 June 2017", "1453465547", "1754488164", null, null],
+        ["30 June 2018", "1482378990", "1759952119", null, null],
+        ["30 June 2019", "1513284499", "1767020958", null, null],
+        ["30 June 2020", "1542372293", "1778332423", null, null],
+        ["30 June 2021", "1578037371", "1796684312", null, null],
+        ["30 June 2022", "1619577242", "1820908259", null, null],
+        ["30 June 2023", "1659350486", "1841652201", null, null],
+        ["30 June 2024", "1682379988", "1842430887", null, null],
+        ["30 June 2025", "1699311422", "1835617536", null, null],
+        ["30 June 2026", "1715221123", "1826781602", null, null],
+        ["30 June 2027", "1732560717", "1818281248", null, null],
+        ["30 June 2028", "1749060877", "1807627789", null, null],
+        ["30 June 2029", "1762273714", "1792263917", null, null],
+        ["30 June 2030", "1774795214", "1774795214", null, null]
+    ];
+
+    fp.ViewModel = function () {
+        var self = this;
+
+        self.controlPanel = {
+            controlPanelModel: new fp.ControlPanelModel()
+        };
+
+        self.prmf = {
+
+        };
+
+        self.risk = {
+            riskModel: new fp.RiskModel(new irisHighChartWrapper())
+        };
+
+        self.flightPlan = {
+            flightPlanModel: new fp.FlightPlanModel({ chartWrapper: new irisHighChartWrapper() })
+        };
+
+        self.reset = function () {
+            if (confirm("Reset the flight plan?")) {
+                self.controlPanel.controlPanelModel.reset();
+                self.risk.riskModel.reset();
+            }
+        };
+    };
+
+    var vm = new fp.ViewModel();
+    vm.risk.riskModel.chartData(fp.riskData);
+    vm.flightPlan.flightPlanModel.chartData(fp.flightPlanData);
+
+    window.addEventListener('shake', vm.reset, false);
+
+    ko.applyBindings(vm);
+
+    //        $(function () {
+    //            //function to call when shake occurs
+    //            function shakeEventDidOccur () {
+    //                vm.reset();
+    //            }
+    //        });
+
+    </script>
+
+</body>
+</html>
+

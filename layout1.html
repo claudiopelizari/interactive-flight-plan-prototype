@@ -41,10 +41,14 @@
 </head>
 <body class="white">
 
+    <div class="container-fluid header-bar">
+        <span id="open-left" class="header-bar-menu-toggle"><i class="glyphicon glyphicon-th "></i></span>
+        <h3>Redington <i class="glyphicon glyphicon-chevron-right"></i> Flight Plan</h3>
+    </div>
 
     <div class="cf-container cf-nav-active">
         <div class="row"><!-- Top row -->
-            <div class="col-sm-6 cf-item">
+            <div class="col-sm-6 col-sm-push-6 cf-item">
                 <!-- top left -->
                 <div class="inner">
                     <header>
@@ -106,7 +110,7 @@
                 </div> <!-- //end inner -->
             </div>
 
-            <div class="col-sm-6 cf-item">
+            <div class="col-sm-6 col-sm-pull-6 cf-item">
                 <!-- top right -->
                 <div class="inner">
                     <header>
@@ -672,12 +676,16 @@
         fp.FlightPlanModel = function (dependencies) {
             var self = this;
 
+            var startTargetFundingYear = 2030;
+
             if (!dependencies) dependencies = {};
             self.chartWrapper = dependencies.chartWrapper || new irisHighChartWrapper();
 
             self.chartData = ko.observableArray([]);
-            self.targetFundingYear = ko.observable(2032);
+            self.targetFundingYear = ko.observable(startTargetFundingYear);
             self.targetFundingYears = ko.observableArray([2024,2025,2026,2027,2028,2029,2030,2031,2032,2033,2034,2035,2036,2037,2038]);
+
+
 
             var seriesData = [
                 { name: 'Liabilities', color: '#2FABE9', data: []},
@@ -693,11 +701,12 @@
                 dataLabels: true
             };
 
+            var renderedChart;
+
             var inMillions = function (num) {
                 var result = Math.round(num / 1000000);
                 return result;
             };
-
 
             self.displayChart = ko.computed(function () {
                 if (self.chartData().length === 0) return;
@@ -708,15 +717,7 @@
                         if (stamp != undefined){
                             var rr = [stamp.unix() * 1000 + 1000, inMillions(parseInt(item[1]))];
                             var l = [stamp.unix() * 1000 + 1000, inMillions(parseInt(item[2]))];
-
-
-                            //fake expected return data for now
-                            var erDummyShift = 0;
-                            if (i < self.chartData().length - 1){
-                                var erDummyShift = Math.floor(Math.random() * 50000000);
-                                erDummyShift *= Math.floor(Math.random()*2) == 1 ? 1 : -1;
-                            }
-                            var er = [stamp.unix() * 1000 + 1000, inMillions(parseInt(item[1]) + erDummyShift)];
+                            var er = [stamp.unix() * 1000 + 1000, inMillions(parseInt(item[3]))];
 
                             seriesData[0].data.push(l);
                             seriesData[1].data.push(rr);
@@ -725,7 +726,7 @@
                     }
                 });
 
-                self.chartWrapper.displayFlightPlanLineChart(options);
+                renderedChart = self.chartWrapper.displayFlightPlanLineChart(options);
             });
 
             self.addOneToTargetFundingYear = function () {
@@ -735,6 +736,12 @@
             self.subtractOneFromTargetFundingYear = function () {
                 self.targetFundingYear(self.targetFundingYear() - 1);
             };
+
+            self.targetFundingYear.subscribe(function (newValue) {
+                renderedChart.xAxis[0].setCategories(['test']);
+            });
+
+            //var changeTargetFundingYear
         };
 
         fp.ControlPanelModel = function () {
@@ -755,11 +762,46 @@
                 self.volControlledEquities(50);
             }
         };
-        
 
-        fp.riskData = [["Date","Risk Type","Percentage of Total Liabilities","Category",null],["31 January 2014","Equity Risk","0.010765388","Asset Risk",null],["31 January 2014","Alternative Risk","0.00533794","Asset Risk",null],["31 January 2014","FX Risk","0.000576727","Asset Risk",null],["31 January 2014","Credit Risk","0.026769249","Asset Risk",null],["31 January 2014","Insurance Risk","0.006609667","Asset Risk",null],["31 January 2014","Interest Rate Risk","0.012016951","Liability Risk",null],["31 January 2014","Inflation Risk","0.019474715","Liability Risk",null],["31 January 2014","Interest Rate Basis Risk","0.028957407","Basis Risk",null],["31 January 2014","Inflation Basis Risk","0.031308809","Basis Risk",null],["31 January 2014","Diversification","0.076792724","Diversification",null],["31 January 2014","Total","0.06502413","Total",null]];
 
-        fp.flightPlanData = [["Date","GF Asset (Gilts +177bps)","GF Liability (Gilt flat)",null,null],["28 June 2013","1419816589","1824449370",null,null],["30 September 2013","1416916182","1818554559",null,null],["30 June 2014","1412647751","1793890195",null,null],["30 June 2015","1417703004","1769838176",null,null],["30 June 2016","1429176417","1754250356",null,null],["30 June 2017","1453465547","1754488164",null,null],["30 June 2018","1482378990","1759952119",null,null],["30 June 2019","1513284499","1767020958",null,null],["30 June 2020","1542372293","1778332423",null,null],["30 June 2021","1578037371","1796684312",null,null],["30 June 2022","1619577242","1820908259",null,null],["30 June 2023","1659350486","1841652201",null,null],["30 June 2024","1682379988","1842430887",null,null],["30 June 2025","1699311422","1835617536",null,null],["30 June 2026","1715221123","1826781602",null,null],["30 June 2027","1732560717","1818281248",null,null],["30 June 2028","1749060877","1807627789",null,null],["30 June 2029","1762273714","1792263917",null,null],["30 June 2030","1774795214","1774795214",null,null]];
+        fp.riskData = [
+            ["Date", "Risk Type", "Percentage of Total Liabilities", "Category", null],
+            ["31 January 2014", "Equity Risk", "0.010765388", "Asset Risk", null],
+            ["31 January 2014", "Alternative Risk", "0.00533794", "Asset Risk", null],
+            ["31 January 2014", "FX Risk", "0.000576727", "Asset Risk", null],
+            ["31 January 2014", "Credit Risk", "0.026769249", "Asset Risk", null],
+            ["31 January 2014", "Insurance Risk", "0.006609667", "Asset Risk", null],
+            ["31 January 2014", "Interest Rate Risk", "0.012016951", "Liability Risk", null],
+            ["31 January 2014", "Inflation Risk", "0.019474715", "Liability Risk", null],
+            ["31 January 2014", "Interest Rate Basis Risk", "0.028957407", "Basis Risk", null],
+            ["31 January 2014", "Inflation Basis Risk", "0.031308809", "Basis Risk", null],
+            ["31 January 2014", "Diversification", "0.076792724", "Diversification", null],
+            ["31 January 2014", "Total", "0.06502413", "Total", null]
+        ];
+
+        fp.flightPlanData = [
+            ["Date",  "GF Asset (Gilts +177bps)",  "GF Liability (Gilt flat)",  "GF Expected Asset (Gilts +177bps)",  null],
+            ["28 June 2013",  "1419816589",  "1824449370", "1419816589",  null],
+            ["30 September 2013",  "1416916182",  "1818554559", "1421166931",  null],
+            ["30 June 2014",  "1412647751",  "1793890195", "1421136351",  null],
+            ["30 June 2015",  "1417703004",  "1769838176", "1430500647",  null],
+            ["30 June 2016",  "1429176417",  "1754250356", "1446403864",  null],
+            ["30 June 2017",  "1453465547",  "1754488164", "1475398735",  null],
+            ["30 June 2018",  "1482378990",  "1759952119", "1509262735",  null],
+            ["30 June 2019",  "1513284499",  "1767020958", "1545350919",  null],
+            ["30 June 2020",  "1542372293",  "1778332423", "1579780247",  null],
+            ["30 June 2021",  "1578037371",  "1796684312", "1621159259",  null],
+            ["30 June 2022",  "1619577242",  "1820908259", "1668825763",  null],
+            ["30 June 2023",  "1659350486",  "1841652201", "1714937867",  null],
+            ["30 June 2024",  "1682379988",  "1842430887", "1743955062",  null],
+            ["30 June 2025",  "1699311422",  "1835617536", "1766790705",  null],
+            ["30 June 2026",  "1715221123",  "1826781602", "1788682173",  null],
+            ["30 June 2027",  "1732560717",  "1818281248", "1812184696",  null],
+            ["30 June 2028",  "1749060877",  "1807627789",  "1807627789",  null],
+            ["30 June 2029",  "1762273714",  "1792263917",  "1792263917",  null],
+            ["30 June 2030",  "1774795214",  "1774795214",  "1774795214",  null]
+
+        ];
 
         fp.ViewModel = function(){
             var self = this;

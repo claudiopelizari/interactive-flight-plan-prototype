@@ -109,3 +109,64 @@
 .new-settings-toggle:hover{
     color: #2FABE9;
 }
+
+.header-bar{
+    background: red;
+    height: 40px;
+    color: #ffffff;
+}
+
+.header-bar h3{
+    float: right;
+    margin: 0px;
+    font-weight: bold;
+    line-height: 40px;
+}
+
+.header-bar-menu-toggle{
+    font-size: 24px;
+    cursor: pointer;
+    line-height: 40px;
+}
+
+.snap-drawers{
+    background-color: lightgray;
+}
+
+.snap-drawer-left{
+    background-color: lightgray;
+}
+
+.snap-drawer-left h3{
+    margin: 0px;
+    font-weight: bold;
+    line-height: 40px;
+}
+
+.snap-content{
+    background-color: white;
+}
+
+.flightplan-container{
+    background-color: lightgray;
+    padding-top: 15px
+}
+
+.flightplan-widget{
+    background-color: #ffffff;
+}
+
+.flightplan-widget-header {
+    padding: 11px 15px;
+}
+
+.flightplan-widget-title{
+    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.highChartContainer{
+    height: 100%;
+}
