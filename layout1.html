@@ -265,7 +265,7 @@
                                         </div>
                                     </div>
                                     <div class="new-settings-box-item">
-                                        <span>Label:</span>
+                                        <span>Risk:</span>
                                         <div class="btn-group btn-group-xs" data-toggle="buttons">
                                             <label class="btn btn-info active">
                                                 <input type="radio" name="RAR" checked> fRAR
@@ -416,7 +416,7 @@
                                 </div>
                                 <div class="settings-box-item">
                                     <span>Discount Basis:</span>
-                                    <div class="radio">
+                                    <div class="radio nottoggle">
                                         <label>
                                             <input type="radio" name="flightplanBasis" checked>
                                             Technical Provision
@@ -450,11 +450,17 @@
 
     $(function (){
        //attach  click handler to collapsible settings panels
-       $('#new-flightplan-settings-toggle').on('click', function () {
+       $('#new-flightplan-settings-toggle').on('click', function (e) {
+           if ($(e.target).is('select, input, button, label')){
+               return;
+           }
            $('#new-flightplan-settings-collapsible').collapse('toggle');
        });
 
-        $('#new-risk-settings-toggle').on('click', function () {
+        $('#new-risk-settings-toggle').on('click', function (e) {
+            if ($(e.target).is('select, input, button, label')){
+                return;
+            }
             $('#new-risk-settings-collapsible').collapse('toggle');
         });
 
