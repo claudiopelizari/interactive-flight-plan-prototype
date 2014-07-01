@@ -85,6 +85,7 @@
     border-top: none;
     border-radius: 0px 0px 5px 5px;
     background-color: rgba(249, 249, 249, 0.92);
+    /*background-image: linear-gradient(#e9eaeb 0%, #fafafb 6.25em);*/
     -webkit-box-shadow: 1px 1px 3px 0px rgba(50, 50, 50, 0.5);
     -moz-box-shadow:    1px 1px 3px 0px rgba(50, 50, 50, 0.5);
     box-shadow:         1px 1px 3px 0px rgba(50, 50, 50, 0.5);
@@ -171,13 +172,30 @@
 
 .asset-container {
     background-color: #ffffff;
-    border: #808080 solid 1px;
-    padding: 5px;
-    margin-top: 5px;
+    border: #ddd solid 1px;
+    border-radius: 4px;
+    padding: 15px;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
 }
 
-.asset-header {
-    font-size: 16px;
+.asset-container .asset-group:first-child {
+    margin-top: 0px;
+}
+
+.asset-group {
+    margin-top: 20px;
+}
+
+.asset-group-header {
+    font-size: 12px;
+    text-transform: uppercase;
+    border-bottom: dashed #ddd 1px;
+    padding-bottom: 5px;
+}
+
+.asset-group-item {
+    padding-top: 10px;
 }
 
 
