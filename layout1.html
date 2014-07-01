@@ -55,6 +55,22 @@
                         <p><span></span>Control Panel</p>
                     </header>
                     <div class="content">
+                        <!--<div class="asset-container">-->
+                            <!--<div class="asset-header">-->
+                                <!--<span>Physical Assets</span>-->
+                            <!--</div>-->
+                            <!--<div class="asset-body">-->
+                                <!--<div class="asset-item row">-->
+                                    <!--<div class="col-xs-2">Equities</div>-->
+                                    <!--<div class="col-xs-9">-->
+                                        <!--<input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.equities, step: 10, max: 100 }" />-->
+                                    <!--</div>-->
+                                    <!--<div class="col-xs-1">-->
+                                        <!--<span data-bind="text: controlPanel.controlPanelModel.equities"></span>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
                         <div id="physicalAssetsContainer" class="panel panel-default">
                             <div class="panel-heading">Physical Assets</div>
                             <div class="panel-body">
@@ -302,7 +318,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="riskChart"></div>
+                        <div class="panel">
+                            <div id="riskChart"></div>
+                        </div>
                         <div class="risk-settings-box active">
                             <div class="risk-settings-box-toggle">
                                 <i class="glyphicon glyphicon-cog"></i>
@@ -399,7 +417,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="flightPlanChart" style="height: 400px;"></div>
+                        <div class="panel">
+                            <div id="flightPlanChart" style="height: 400px;"></div>
+                        </div>
                         <div class="flightplan-settings-box active">
                             <div class="flightplan-settings-box-toggle">
                                 <i class="glyphicon glyphicon-cog"></i>
