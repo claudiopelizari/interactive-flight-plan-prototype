@@ -220,7 +220,7 @@
                                                 <input type="radio" name="RAR" checked> fRAR
                                             </label>
                                             <label class="btn btn-info">
-                                                <input type="radio" name="RAR"> RAR
+                                                <input type="radio" name="RAR" data-bind="click: moveNext"> RAR
                                             </label>
                                             <label class="btn btn-info">
                                                 <input type="radio" name="RAR"> VAR
@@ -733,7 +733,7 @@
         };
 
 
-        fp.riskData = [
+        fp.riskData = [[
             ["Date", "Risk Type", "Percentage of Total Liabilities", "Category", null],
             ["31 January 2014", "Equity Risk", "0.010765388", "Asset Risk", null],
             ["31 January 2014", "Alternative Risk", "0.00533794", "Asset Risk", null],
@@ -746,7 +746,20 @@
             ["31 January 2014", "Inflation Basis Risk", "0.031308809", "Basis Risk", null],
             ["31 January 2014", "Diversification", "0.076792724", "Diversification", null],
             ["31 January 2014", "Total", "0.06502413", "Total", null]
-        ];
+        ],[
+            ["Date", "Risk Type", "Percentage of Total Liabilities", "Category", null],
+            ["31 January 2014", "Equity Risk", "0.000765388", "Asset Risk", null],
+            ["31 January 2014", "Alternative Risk", "0.00033794", "Asset Risk", null],
+            ["31 January 2014", "FX Risk", "0.000076727", "Asset Risk", null],
+            ["31 January 2014", "Credit Risk", "0.006769249", "Asset Risk", null],
+            ["31 January 2014", "Insurance Risk", "0.000609667", "Asset Risk", null],
+            ["31 January 2014", "Interest Rate Risk", "0.002016951", "Liability Risk", null],
+            ["31 January 2014", "Inflation Risk", "0.009474715", "Liability Risk", null],
+            ["31 January 2014", "Interest Rate Basis Risk", "0.008957407", "Basis Risk", null],
+            ["31 January 2014", "Inflation Basis Risk", "0.001308809", "Basis Risk", null],
+            ["31 January 2014", "Diversification", "0.006792724", "Diversification", null],
+            ["31 January 2014", "Total", "0.06502413", "Total", null]
+        ]];
 
         fp.flightPlanData = [
             ["Date",  "GF Asset (Gilts +177bps)",  "GF Liability (Gilt flat)",  "GF Expected Asset (Gilts +177bps)",  null],
@@ -772,8 +785,57 @@
 
         ];
 
+        fp.Scenes = function(){
+          return [
+              {
+                  scene : {
+                      prmf:{},
+                      fp : {},
+                      risk : {}
+                  }
+              },
+              {
+                  scene : {
+                      prmf: {},
+                      fp : {},
+                      risk : {}
+                  }
+              },
+              {
+                  scene : {
+                      prmf: {},
+                      fp : {},
+                      risk : {}
+                  }
+              },
+              {
+                  scene : {
+                      prmf: {},
+                      fp : {},
+                      risk : {}
+                  }
+              }
+          ]
+        };
+
         fp.ViewModel = function(){
             var self = this;
+
+            self.sceneIndex = ko.observable(0);
+
+            self.moveNext = function(){
+              self.sceneIndex(self.sceneIndex() + 1);
+            };
+
+            self.risk = {
+                riskModel : new fp.RiskModel(new irisHighChartWrapper())
+            };
+
+            self.sceneChange = ko.computed(function(){
+
+                if(self.risk.riskModel) self.risk.riskModel.chartData(fp.riskData[self.sceneIndex()]);
+
+            }, this);
 
             self.controlPanel = {
                 controlPanelModel: new fp.ControlPanelModel()
@@ -783,9 +845,7 @@
 
             };
 
-            self.risk = {
-                riskModel : new fp.RiskModel(new irisHighChartWrapper())
-            };
+
 
             self.flightPlan = {
                 flightPlanModel: new fp.FlightPlanModel({ chartWrapper: new irisHighChartWrapper() })
@@ -800,7 +860,7 @@
         };
 
         var vm = new fp.ViewModel();
-        vm.risk.riskModel.chartData(fp.riskData);
+        //vm.risk.riskModel.chartData(fp.riskData1);
         vm.flightPlan.flightPlanModel.chartData(fp.flightPlanData);
 
         window.addEventListener('shake', vm.reset, false);
