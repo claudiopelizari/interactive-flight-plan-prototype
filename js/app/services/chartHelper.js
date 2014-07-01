@@ -427,6 +427,7 @@ var irisHighChartWrapper = function() {
     var flightPlanLineChart = function (options){
         var settings = {
             chart: {
+                renderTo: options.renderTo,
                 type: 'line'
             },
             credits: {
@@ -475,7 +476,7 @@ var irisHighChartWrapper = function() {
             series: options.lineSeriesData
         };
 
-        $(options.renderTo).highcharts(settings);
+        return $(options.renderTo).highcharts(settings).highcharts();
     };
 
     return {
