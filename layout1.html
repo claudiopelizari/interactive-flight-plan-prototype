@@ -54,12 +54,75 @@
                         <p><span></span>Control Panel</p>
                     </header>
                     <div class="content">
-                        <!--<div class="asset-container">-->
-                            <!--<div class="asset-header">-->
-                                <!--<span>Physical Assets</span>-->
-                            <!--</div>-->
-                            <!--<div class="asset-body">-->
-                                <!--<div class="asset-item row">-->
+                        <div class="asset-container">
+                            <div class="asset-group">
+                                <div class="asset-group-header">
+                                    <span>Physical Assets</span>
+                                </div>
+                                <div class="asset-group-body">
+                                    <div class="asset-group-item row">
+                                        <div class="col-xs-2">Equities</div>
+                                        <div class="col-xs-9">
+                                            <input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.equities, step: 10, max: 100 }" />
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <span data-bind="text: controlPanel.controlPanelModel.equities"></span>
+                                        </div>
+                                    </div>
+                                    <div class="asset-group-item row">
+                                        <div class="col-xs-2">Gilts</div>
+                                        <div class="col-xs-9">
+                                            <input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.gilts, step: 10, max: 100 }" />
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <span data-bind="text: controlPanel.controlPanelModel.gilts"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="asset-group">
+                                <div class="asset-group-header">
+                                    <span>Synthetic Assets</span>
+                                </div>
+                                <div class="asset-group-body">
+                                    <div class="asset-group-item row">
+                                        <div class="col-xs-2">Swaps</div>
+                                        <div class="col-xs-9">
+                                            <input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.swaps, step: 10, max: 100 }" />
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <span data-bind="text: controlPanel.controlPanelModel.swaps"></span>
+                                        </div>
+                                    </div>
+                                    <div class="asset-group-item row">
+                                        <div class="col-xs-2">Vol Controlled Equities</div>
+                                        <div class="col-xs-9">
+                                            <input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.volControlledEquities, step: 10, max: 100 }" />
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <span data-bind="text: controlPanel.controlPanelModel.volControlledEquities"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="asset-group">
+                                <div class="asset-group-header">
+                                    <span>Total</span>
+                                </div>
+                                <div class="asset-group-body">
+                                    <div class="asset-group-item row">
+                                        <div class="col-xs-11"></div>
+                                        <div class="col-xs-1">
+                                            <span data-bind="text: controlPanel.controlPanelModel.totalAssets"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--<div id="physicalAssetsContainer" class="panel panel-default">-->
+                            <!--<div class="panel-heading">Physical Assets</div>-->
+                            <!--<div class="panel-body">-->
+                                <!--<div class="row asset-type-row">-->
                                     <!--<div class="col-xs-2">Equities</div>-->
                                     <!--<div class="col-xs-9">-->
                                         <!--<input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.equities, step: 10, max: 100 }" />-->
@@ -68,59 +131,45 @@
                                         <!--<span data-bind="text: controlPanel.controlPanelModel.equities"></span>-->
                                     <!--</div>-->
                                 <!--</div>-->
+                                <!--<div class="row asset-type-row">-->
+                                    <!--<div class="col-xs-2">Gilts</div>-->
+                                    <!--<div class="col-xs-9">-->
+                                        <!--<input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.gilts, step: 10, max: 100 }" />-->
+                                    <!--</div>-->
+                                    <!--<div class="col-xs-1">-->
+                                        <!--<span data-bind="text: controlPanel.controlPanelModel.gilts"></span>-->
+                                    <!--</div>-->
+                                <!--</div>-->
                             <!--</div>-->
                         <!--</div>-->
-                        <div id="physicalAssetsContainer" class="panel panel-default">
-                            <div class="panel-heading">Physical Assets</div>
-                            <div class="panel-body">
-                                <div class="row asset-type-row">
-                                    <div class="col-xs-2">Equities</div>
-                                    <div class="col-xs-9">
-                                        <input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.equities, step: 10, max: 100 }" />
-                                    </div>
-                                    <div class="col-xs-1">
-                                        <span data-bind="text: controlPanel.controlPanelModel.equities"></span>
-                                    </div>
-                                </div>
-                                <div class="row asset-type-row">
-                                    <div class="col-xs-2">Gilts</div>
-                                    <div class="col-xs-9">
-                                        <input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.gilts, step: 10, max: 100 }" />
-                                    </div>
-                                    <div class="col-xs-1">
-                                        <span data-bind="text: controlPanel.controlPanelModel.gilts"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="syntheticAssetsContainer" class="panel panel-default">
-                            <div class="panel-heading">Synthetic Assets</div>
-                            <div class="panel-body">
-                                <div class="row asset-type-row">
-                                    <div class="col-xs-2">Swaps</div>
-                                    <div class="col-xs-9">
-                                        <input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.swaps, step: 10, max: 100 }" />
-                                    </div>
-                                    <div class="col-xs-1">
-                                        <span data-bind="text: controlPanel.controlPanelModel.swaps"></span>
-                                    </div>
-                                </div>
-                                <div class="row asset-type-row">
-                                    <div class="col-xs-2">Vol Controlled Equities</div>
-                                    <div class="col-xs-9">
-                                        <input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.volControlledEquities, step: 10, max: 100 }" />
-                                    </div>
-                                    <div class="col-xs-1">
-                                        <span data-bind="text: controlPanel.controlPanelModel.volControlledEquities"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-body">
-                                Total: <span data-bind="text: controlPanel.controlPanelModel.totalAssets"></span>
-                            </div>
-                        </div>
+                        <!--<div id="syntheticAssetsContainer" class="panel panel-default">-->
+                            <!--<div class="panel-heading">Synthetic Assets</div>-->
+                            <!--<div class="panel-body">-->
+                                <!--<div class="row asset-type-row">-->
+                                    <!--<div class="col-xs-2">Swaps</div>-->
+                                    <!--<div class="col-xs-9">-->
+                                        <!--<input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.swaps, step: 10, max: 100 }" />-->
+                                    <!--</div>-->
+                                    <!--<div class="col-xs-1">-->
+                                        <!--<span data-bind="text: controlPanel.controlPanelModel.swaps"></span>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div class="row asset-type-row">-->
+                                    <!--<div class="col-xs-2">Vol Controlled Equities</div>-->
+                                    <!--<div class="col-xs-9">-->
+                                        <!--<input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.volControlledEquities, step: 10, max: 100 }" />-->
+                                    <!--</div>-->
+                                    <!--<div class="col-xs-1">-->
+                                        <!--<span data-bind="text: controlPanel.controlPanelModel.volControlledEquities"></span>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="panel panel-default">-->
+                            <!--<div class="panel-body">-->
+                                <!--Total: <span data-bind="text: controlPanel.controlPanelModel.totalAssets"></span>-->
+                            <!--</div>-->
+                        <!--</div>-->
                     </div>
                 </div> <!-- //end inner -->
             </div>
