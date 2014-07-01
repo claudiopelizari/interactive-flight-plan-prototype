@@ -3,7 +3,7 @@
 <head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
-    <title>Controlfrog - Meaningful Metrics</title>
+    <title>Redington - Flightplan</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="css/styles.css" rel="stylesheet">
@@ -46,7 +46,7 @@
         <h3>Redington <i class="glyphicon glyphicon-chevron-right"></i> Flight Plan</h3>
     </div>
 
-    <div class="cf-container cf-nav-active">
+    <div class="cf-container cf-nav-active maincontent">
         <div class="row"><!-- Top row -->
             <div class="col-sm-6 col-sm-push-6 cf-item">
                 <!-- top left -->
@@ -295,9 +295,9 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="new-settings-toggle">
+                                    <div id="new-risk-settings-toggle" class="new-settings-toggle">
                                         <!--<button type="button" class="btn btn-info btn-xs" data-toggle="collapse" data-target="#new-flightplan-settings-collapsible">Hide/Show</button>-->
-                                        <i id="new-risk-settings-toggle" class="glyphicon glyphicon-cog"></i>
+                                        <i class="glyphicon glyphicon-cog"></i>
                                     </div>
                                 </div>
                             </div>
@@ -392,9 +392,9 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="new-settings-toggle">
+                                    <div id="new-flightplan-settings-toggle" class="new-settings-toggle">
                                         <!--<button type="button" class="btn btn-info btn-xs" data-toggle="collapse" data-target="#new-flightplan-settings-collapsible">Hide/Show</button>-->
-                                        <i id="new-flightplan-settings-toggle" class="glyphicon glyphicon-cog"></i>
+                                        <i class="glyphicon glyphicon-cog"></i>
                                     </div>
                                 </div>
                             </div>
@@ -473,17 +473,17 @@
 
     $(function () {
         $('.flightplan-settings-box').animate({
-            right: "-200px"
+            right: "-229px"
         }, 'slow').removeClass('active');
 
         $('.flightplan-settings-box-toggle').on('click', function () {
             if ($('.flightplan-settings-box').hasClass('active')){
                 $('.flightplan-settings-box').animate({
-                    right: '-200px'
+                    right: '-229px'
                 }, 'slow').removeClass('active')
             }else{
                 $('.flightplan-settings-box').animate({
-                    right: '0px'
+                    right: '-29px'
                 }, 'slow').addClass('active')
             }
         })
@@ -688,9 +688,9 @@
 
 
             var seriesData = [
-                { name: 'Liabilities', color: '#2FABE9', data: []},
-                { name: 'Required Return', color: '#FA5833', data: [] },
-                { name: 'Expected Return', color: '#008000', data: [], dashStyle: 'shortdash' }
+                { name: 'Liabilities', color: '#2FABE9', data: [], index: 2 },
+                { name: 'Required Return', color: '#FA5833', data: [], index: 1 },
+                { name: 'Expected Return', color: '#008000', data: [], dashStyle: 'shortdash', index: 0 }
             ];
 
             var options = {
@@ -738,10 +738,34 @@
             };
 
             self.targetFundingYear.subscribe(function (newValue) {
-                renderedChart.xAxis[0].setCategories(['test']);
+                changeTargetFundingYear(newValue);
             });
 
-            //var changeTargetFundingYear
+            var changeTargetFundingYear = function (newValue) {
+
+                var newData = [];
+                var brentsConstant = 0.003;
+                var newDataItem = 0;
+                var continuePlotting = true;
+
+                ko.utils.arrayForEach(self.chartData(), function (item, i) {
+                    if (item[0] !== 'Date') {
+                        var stamp = moment.utc(item[0]);
+                        var baseRR = inMillions(parseInt(item[1]));
+                        var l = inMillions(parseInt(item[2]));
+                        newDataItem = baseRR + Math.floor(baseRR * (startTargetFundingYear - newValue) * i * brentsConstant);
+
+                        if (newDataItem > l) {
+                            newDataItem = l;
+                        }
+
+                        var nd = [stamp.unix() * 1000 + 1000, newDataItem];
+                        newData.push(nd)
+                    }
+                });
+
+                renderedChart.series[1].setData(newData);
+            }
         };
 
         fp.ControlPanelModel = function () {

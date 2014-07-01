@@ -5,7 +5,7 @@
 
 .flightplan-settings-box {
     position: absolute;
-    right: 0px;
+    right: -29px;
     width: 199px;
     top: 5%;
     /*padding: 20px;*/
@@ -111,7 +111,7 @@
 }
 
 .header-bar{
-    background: red;
+    background: #c9302c;
     height: 40px;
     color: #ffffff;
 }
@@ -170,3 +170,8 @@
 .highChartContainer{
     height: 100%;
 }
+
+.maincontent {
+    background-image: linear-gradient(#fefefe 2em, #e7e7e8);
+}
+
