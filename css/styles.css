@@ -115,6 +115,8 @@
     /*background: #c9302c;*/
     height: 45px;
     color: #cbcbcb;
+    background-color: #939393;
+    margin-bottom: 10px;
 }
 
 .header-bar h3{
