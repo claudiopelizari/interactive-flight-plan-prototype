@@ -170,16 +170,7 @@
     background-image: linear-gradient(#fefefe 2em, #e7e7e8);
 }
 
-.asset-container {
-    background-color: #ffffff;
-    border: #ddd solid 1px;
-    border-radius: 4px;
-    padding: 15px;
-    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-    box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-}
-
-.asset-container .asset-group:first-child {
+.panel-body .asset-group:first-child {
     margin-top: 0px;
 }
 
