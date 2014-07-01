@@ -171,11 +171,7 @@
     height: 100%;
 }
 
-/*.maincontent {*/
-    /*background-image: linear-gradient(#fefefe 2em, #e7e7e8);*/
-/*}*/
-
-#body {
+.maincontent {
     background-image: linear-gradient(#fefefe 2em, #e7e7e8);
 }
 
