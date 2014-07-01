@@ -664,13 +664,15 @@ function cfSizeItems(){
 	var width = $(window).width();
 
 	$('.cf-item').each(function(){
-		if(width > 767 ){
-			//$(this).height($(this).width());
-            $(this).height(500);
-		}
-		else{
-			$(this).height('auto');
-		}
+//		if(width > 767 ){
+//			//$(this).height($(this).width());
+//            $(this).height(500);
+//		}
+//		else{
+//			$(this).height('auto');
+//		}
+        //always use auto height
+        $(this).height('auto');
 	});
 }
 // Call the resize function on window resize
