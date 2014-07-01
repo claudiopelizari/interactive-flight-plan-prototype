@@ -137,52 +137,54 @@
                         <table class="table table-hover table-prmf table-borderless-first-row">
 
                             <tr>
-                                <th class="cf-txts-txt m-red">Flight Plan</th>
-                                <td class="m-red prmf-value">
-                                    Required Return: 84 bps<br/>
-                                    Expected Return: 146 bps
+                                <th class="cf-txts-txt" data-bind="css: prmf().fptmpl">Flight Plan</th>
+                                <td class="prmf-value" data-bind="css: prmf().fptmpl">
+                                    Required Return: <span data-bind="text: prmf().required"></span><br/>
+                                    Expected Return: <span data-bind="text: prmf().expected"></span>
                                 </td>
                                 <td class="cf-bars-bar  mb prmf-status">
 
-                                        <span class="glyphicon glyphicon-exclamation-sign prmf-icon m-red"></span>
+                                    <!-- ko template: prmf().fptmpl -->
+                                    <!-- /ko -->
 
                                 </td>
                             </tr>
 
                             <tr>
-                                <th class="cf-txts-txt m-amber">Risk Budget</th>
-                                <td class="m-amber prmf-value">
-                                   RAR 9%
+                                <th class="cf-txts-txt"  data-bind="css: prmf().rbtmpl">Risk Budget</th>
+                                <td class="prmf-value"  data-bind="css: prmf().rbtmpl">
+                                    <span data-bind="text: prmf().risk"></span>
                                 </td>
-                                <td class="cf-bars-bar  mb prmf-status">
-
-                                    <span class="glyphicon glyphicon-minus-sign prmf-icon m-amber"></span>
-
+                                <td class="cf-bars-bar mb prmf-status">
+                                    <!-- ko template: prmf().rbtmpl -->
+                                    <!-- /ko -->
                                 </td>
                             </tr>
 
                             <tr>
-                                <th class="cf-txts-txt m-amber">Hedge Ratio</th>
-                                <td class="m-amber prmf-value">
-                                    Hedge Ratio: 70%<br/>
-                                    Funding Ratio: 69%
+                                <th class="cf-txts-txt"  data-bind="css: prmf().hrtmpl">Hedge Ratio</th>
+                                <td class="prmf-value"  data-bind="css: prmf().hrtmpl">
+                                    Hedge Ratio: <span data-bind="text: prmf().hedge"></span><br/>
+                                    Funding Ratio: <span data-bind="text: prmf().fr"></span>
                                 </td>
                                 <td class="cf-bars-bar mb prmf-status">
 
-                                    <span class="glyphicon glyphicon-minus-sign prmf-icon m-amber"></span>
+                                    <!-- ko template: prmf().hrtmpl -->
+                                    <!-- /ko -->
 
                                 </td>
                             </tr>
 
 
                             <tr>
-                                <th class="cf-txts-txt m-green">Collateral</th>
-                                <td class="m-green prmf-value">
-                                    £444M
+                                <th class="cf-txts-txt"  data-bind="css: prmf().cttmpl">Collateral</th>
+                                <td class="prmf-value"  data-bind="css: prmf().cttmpl">
+                                    <span data-bind="text: prmf().collateral"></span>
                                 </td>
                                 <td class="cf-bars-bar  mb prmf-status">
 
-                                    <span class="glyphicon glyphicon-ok-sign prmf-icon m-green"></span>
+                                    <!-- ko template: prmf().cttmpl -->
+                                    <!-- /ko -->
 
                                 </td>
                             </tr>
@@ -384,6 +386,22 @@
 
         </div>
     </div>
+
+
+    <!-- knockout templates -->
+
+    <script type="text/html" id="m-red">
+        <span class="glyphicon glyphicon-exclamation-sign prmf-icon m-red"></span>
+    </script>
+
+    <script type="text/html" id="m-amber">
+        <span class="glyphicon glyphicon-minus-sign prmf-icon m-amber"></span>
+    </script>
+
+    <script type="text/html" id="m-green">
+        <span class="glyphicon glyphicon-ok-sign prmf-icon m-green"></span>
+    </script>
+
 
     <script src="js/highcharts.js"></script>
     <script src="js/highcharts-more.js"></script>
@@ -732,6 +750,45 @@
             }
         };
 
+        fp.prmf = [
+
+                {
+                    required : "84 bps",
+                    expected : "146 bps",
+                    risk : "RAR 9%",
+                    hedge : "70%",
+                    fr : "69%",
+                    collateral : "£444M",
+                    fptitle : "Flight Plan",
+                    rbtitle : "Risk Budget",
+                    hrtitle : "Hedge Ratio",
+                    cttitle : "Collateral",
+                    fptmpl : "m-red",
+                    rbtmpl : "m-amber",
+                    hrtmpl : "m-amber",
+                    cttmpl : "m-green"
+                }
+            ,
+
+                {
+                    required : "70 bps",
+                    expected : "146 bps",
+                    risk : "RAR 4%",
+                    hedge : "90%",
+                    fr : "84%",
+                    fptitle : "Flight Plan",
+                    rbtitle : "Risk Budget",
+                    hrtitle : "Hedge Ratio",
+                    cttitle : "Collateral",
+                    collateral : "£514M",
+                    fptmpl : "m-amber",
+                    rbtmpl : "m-amber",
+                    hrtmpl : "m-green",
+                    cttmpl : "m-green"
+                }
+
+        ];
+
 
         fp.riskData = [[
             ["Date", "Risk Type", "Percentage of Total Liabilities", "Category", null],
@@ -785,38 +842,6 @@
 
         ];
 
-        fp.Scenes = function(){
-          return [
-              {
-                  scene : {
-                      prmf:{},
-                      fp : {},
-                      risk : {}
-                  }
-              },
-              {
-                  scene : {
-                      prmf: {},
-                      fp : {},
-                      risk : {}
-                  }
-              },
-              {
-                  scene : {
-                      prmf: {},
-                      fp : {},
-                      risk : {}
-                  }
-              },
-              {
-                  scene : {
-                      prmf: {},
-                      fp : {},
-                      risk : {}
-                  }
-              }
-          ]
-        };
 
         fp.ViewModel = function(){
             var self = this;
@@ -824,7 +849,11 @@
             self.sceneIndex = ko.observable(0);
 
             self.moveNext = function(){
-              self.sceneIndex(self.sceneIndex() + 1);
+
+                var index = self.sceneIndex() + 1;
+                if(index >= fp.prmf.length) index = 0;
+
+              self.sceneIndex(index);
             };
 
             self.risk = {
@@ -841,11 +870,9 @@
                 controlPanelModel: new fp.ControlPanelModel()
             };
 
-            self.prmf = {
-
-            };
-
-
+            self.prmf = ko.computed(function(){
+                return fp.prmf[self.sceneIndex()];
+            }, this);
 
             self.flightPlan = {
                 flightPlanModel: new fp.FlightPlanModel({ chartWrapper: new irisHighChartWrapper() })
