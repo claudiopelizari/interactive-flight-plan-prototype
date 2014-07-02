@@ -20,9 +20,9 @@ var irisHighChartWrapper = function() {
                 },
                 labels: {
                     rotation: options.xAxisRotation || ""
-                }
+                },
+                plotBands: options.xAxisPlotBands || []
             },
-
             yAxis: [{
                 min: options.yAxisMin || 0,
                 minRange: options.yAxisMinRange || 0,

@@ -46,7 +46,7 @@
     </div>
 
     <div class="cf-container cf-nav-active">
-        <div class="row"><!-- Top row -->
+        <div class="row" id="topRowContent"><!-- Top row -->
             <div class="col-sm-6 col-sm-push-6 cf-item">
                 <!-- top left -->
                 <div class="inner">
@@ -207,7 +207,7 @@
                     </header>
                     <div class="content">
                         <div class="new-settings-box">
-                            <div class="container-fluid new-settings-box-content">
+                            <div id="new-risk-settings-toggle" class="container-fluid new-settings-box-content">
                                 <div id="new-risk-settings-collapsible" class="row collapse in">
                                     <div class="new-settings-box-item">
                                         <span>Basis Risk:</span>
@@ -233,8 +233,11 @@
                                             </label>
                                         </div>
                                     </div>
+                                    <div class="new-settings-box-item pull-right">
+                                        <button type="button" class="btn btn-xs btn-default" data-toggle="modal" data-target="#riskChartData">Data</button>
+                                    </div>
                                 </div>
-                                <div class="row" id="new-risk-settings-toggle">
+                                <div class="row">
                                     <div class="new-settings-toggle">
                                         <span class="settings-helper-text"><i class="glyphicon glyphicon-cog"></i> &nbsp;&nbsp;click to change settings</span>
                                     </div>
@@ -296,7 +299,7 @@
                     </header>
                     <div class="content">
                         <div class="new-settings-box">
-                            <div class="container-fluid new-settings-box-content">
+                            <div id="new-flightplan-settings-toggle" class="container-fluid new-settings-box-content">
                                 <div id="new-flightplan-settings-collapsible" class="row collapse in">
                                     <div class="new-settings-box-item">
                                         <span>Target funding year:</span>
@@ -332,7 +335,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row" id="new-flightplan-settings-toggle">
+                                <div class="row">
                                     <div class="new-settings-toggle">
                                         <span class="settings-helper-text"><i class="glyphicon glyphicon-cog"></i> &nbsp;&nbsp;click to change settings</span>
                                     </div>
@@ -386,6 +389,26 @@
             </div>
 
         </div>
+        <div class="modal fade" id="riskChartData" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <table class="table table-hover table-striped">
+                            <tbody data-bind="foreach: risk.riskModel.chartDataItems">
+                                <tr>
+                                    <td>
+                                        <span data-bind="text: riskName "></span>
+                                    </td>
+                                    <td>
+                                        <span data-bind="text: riskPercentage "></span>%
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -419,14 +442,14 @@
     $(function (){
        //attach  click handler to collapsible settings panels
        $('#new-flightplan-settings-toggle').on('click', function (e) {
-           if ($(e.target).is('select, input, button, label')){
+           if ($(e.target).is('select, input, button, label, a')){
                return;
            }
            $('#new-flightplan-settings-collapsible').collapse('toggle');
        });
 
         $('#new-risk-settings-toggle').on('click', function (e) {
-            if ($(e.target).is('select, input, button, label')){
+            if ($(e.target).is('select, input, button, label, a')){
                 return;
             }
             $('#new-risk-settings-collapsible').collapse('toggle');
@@ -436,7 +459,7 @@
         $('#new-risk-settings-collapsible').collapse('hide');
         $('#new-flightplan-settings-collapsible').collapse('hide');
 
-        $(document).on('click', hideAllCollapsibles);
+        $('#topRowContent').on('click', hideAllCollapsibles);
     });
 
     $(function () {
@@ -645,6 +668,11 @@
                         yAxisTitle: self.chartYAxisTitle(),
                         xAxisTitle: "Risk Type",
                         xAxisRotation: -45,
+//                        xAxisPlotBands: [{
+//                            color: '#E7F5FF',
+//                            from: -0.5,
+//                            to: 3.5
+//                        }],
                         yAxisMin: 0,
                         yAxisMinRange: yAxisMinRange,
                         dataLabels: true,
@@ -653,7 +681,6 @@
                                 if (hideCollapsibleFunction) hideCollapsibleFunction();
                             }
                         }
-
                     };
 
                     renderedChart = self.chartWrapper.displayWaterfallChart(options);
@@ -662,6 +689,25 @@
                     renderedChart.series[1].setData(self.totalSeriesData());
                 }
             });
+
+            self.chartDataItems = ko.computed(function() {
+                var result = [];
+                if (self.chartData().length === 0) return result;
+
+                var stringData = ko.utils.stringifyJson(self.chartData());
+                var copyOfOriginalData = JSON.parse(stringData);
+                copyOfOriginalData.shift();
+
+                ko.utils.arrayForEach(copyOfOriginalData, function (data) {
+                    data.shift();
+                    var y = parseFloat(data[1]);
+                    y *= 100;
+                    result.push({ riskName: data[0], riskPercentage: parseFloat(y.toFixed(2)) });
+                });
+
+                return result;
+
+            })
         };
 
         fp.FlightPlanModel = function (dependencies) {
