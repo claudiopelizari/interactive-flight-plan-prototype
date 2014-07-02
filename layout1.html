@@ -64,19 +64,19 @@
                                         <div class="asset-group-item row">
                                             <div class="col-xs-2">Equities</div>
                                             <div class="col-xs-9">
-                                                <input type="text" data-bind="sliderValue: { value: controlPanel().equities, step: 10, max: 100, slideStop: moveNext }" />
+                                                <input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.equities, step: 10, max: 100 }" />
                                             </div>
                                             <div class="col-xs-1">
-                                                <span data-bind="text: controlPanel().equities"></span>
+                                                <span data-bind="text: controlPanel.controlPanelModel.equities"></span>
                                             </div>
                                         </div>
                                         <div class="asset-group-item row">
                                             <div class="col-xs-2">Gilts</div>
                                             <div class="col-xs-9">
-                                                <input type="text" data-bind="sliderValue: { value: controlPanel().gilts, step: 10, max: 100, slideStop: moveNext }" />
+                                                <input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.gilts, step: 10, max: 100 }" />
                                             </div>
                                             <div class="col-xs-1">
-                                                <span data-bind="text: controlPanel().gilts"></span>
+                                                <span data-bind="text: controlPanel.controlPanelModel.gilts"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -89,19 +89,19 @@
                                         <div class="asset-group-item row">
                                             <div class="col-xs-2">Swaps</div>
                                             <div class="col-xs-9">
-                                                <input type="text" data-bind="sliderValue: { value: controlPanel().swaps, step: 10, max: 100, slideStop: moveNext }" />
+                                                <input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.swaps, step: 10, max: 100 }" />
                                             </div>
                                             <div class="col-xs-1">
-                                                <span data-bind="text: controlPanel().swaps"></span>
+                                                <span data-bind="text: controlPanel.controlPanelModel.swaps"></span>
                                             </div>
                                         </div>
                                         <div class="asset-group-item row">
                                             <div class="col-xs-2">Vol Controlled Equities</div>
                                             <div class="col-xs-9">
-                                                <input type="text" data-bind="sliderValue: { value: controlPanel().volControlledEquities, step: 10, max: 100, slideStop: moveNext }" />
+                                                <input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.volControlledEquities, step: 10, max: 100 }" />
                                             </div>
                                             <div class="col-xs-1">
-                                                <span data-bind="text: controlPanel().volControlledEquities"></span>
+                                                <span data-bind="text: controlPanel.controlPanelModel.volControlledEquities"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -114,7 +114,7 @@
                                         <div class="asset-group-item row">
                                             <div class="col-xs-11"></div>
                                             <div class="col-xs-1">
-                                                <span data-bind="text: controlPanel().totalAssets"></span>
+                                                <span data-bind="text: controlPanel.controlPanelModel.totalAssets"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -223,7 +223,7 @@
                                                 <input type="radio" name="RAR" checked> fRAR
                                             </label>
                                             <label class="btn btn-info">
-                                                <input type="radio" name="RAR" data-bind="click: moveNext"> RAR
+                                                <input type="radio" name="RAR"> RAR
                                             </label>
                                             <label class="btn btn-info">
                                                 <input type="radio" name="RAR"> VAR
@@ -427,11 +427,13 @@
     </script>
 
 
+    <script src="js/underscore.js"></script>
     <script src="js/highcharts.js"></script>
     <script src="js/highcharts-more.js"></script>
 
     <script src="js/knockout-min.js"></script>
     <script src="js/app/services/chartHelper.js"></script>
+
 
     <script>
 
@@ -519,9 +521,6 @@
 
                 $(element).on('slideStop', function (ev) {
                     if (ko.isObservable(valueObservable)) valueObservable(ev.value);
-                    if (params['slideStop'] !== undefined){
-                        params['slideStop']();
-                    }
                 });
             },
             update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
@@ -817,6 +816,31 @@
             }
         };
 
+    fp.ControlPanelModel = function(dependencies) {
+        var self = this;
+        if (!dependencies) dependencies = {};
+
+        self.equities = ko.observable(dependencies.startingEquities);
+        self.gilts = ko.observable(dependencies.startingGilts);
+        self.swaps = ko.observable(dependencies.startingSwaps);
+        self.volControlledEquities = ko.observable(dependencies.startingVolControlledEquities);
+        self.totalAssets = ko.computed(function () {
+            return self.equities() + self.gilts() + self.swaps() + self.volControlledEquities();
+        });
+
+        self.equities.subscribe(dependencies.assetAllocationChangedCallback);
+        self.gilts.subscribe(dependencies.assetAllocationChangedCallback);
+        self.swaps.subscribe(dependencies.assetAllocationChangedCallback);
+        self.volControlledEquities.subscribe(dependencies.assetAllocationChangedCallback);
+
+        self.reset = function () {
+            self.equities(dependencies.startingEquities);
+            self.gilts(dependencies.startingGilts);
+            self.swaps(dependencies.startingSwaps);
+            self.volControlledEquities(dependencies.startingVolControlledEquities);
+        }
+    };
+
         fp.prmf = [
             {
                 required : "100 bps",
@@ -876,22 +900,19 @@
                 equities: 70,
                 gilts: 30,
                 swaps: 0,
-                volControlledEquities: 0,
-                totalAssets: 100
+                volControlledEquities: 0
             },
             {
                 equities: 70,
                 gilts: 30,
                 swaps: 30,
-                volControlledEquities: 0,
-                totalAssets: 130
+                volControlledEquities: 0
             },
             {
                 equities: 0,
                 gilts: 40,
                 swaps: 30,
-                volControlledEquities: 60,
-                totalAssets: 130
+                volControlledEquities: 60
             }
         ];
 
@@ -1001,35 +1022,65 @@
             ["30 June 2030",  "1774795214",  "1774795214",  "1774795214",  null]
         ]];
 
-        fp.ViewModel = function(){
+        fp.ViewModel = function() {
             var self = this;
 
             self.sceneIndex = ko.observable(0);
 
-            self.moveNext = function(){
+            self.moveNext = function () {
 
                 var index = self.sceneIndex() + 1;
-                if(index >= fp.prmf.length) index = 0;
+                if (index >= fp.prmf.length) index = 0;
 
                 self.sceneIndex(index);
             };
 
             self.risk = {
-                riskModel : new fp.RiskModel({ chartWrapper: new irisHighChartWrapper(), hideCollapsibleFunction: hideAllCollapsibles })
+                riskModel: new fp.RiskModel({ chartWrapper: new irisHighChartWrapper(), hideCollapsibleFunction: hideAllCollapsibles })
             };
 
             self.flightPlan = {
                 flightPlanModel: new fp.FlightPlanModel({ chartWrapper: new irisHighChartWrapper(), hideCollapsibleFunction: hideAllCollapsibles })
             };
 
-            self.sceneChange = ko.computed(function(){
-                if(self.risk.riskModel) self.risk.riskModel.chartData(fp.riskData[self.sceneIndex()]);
-                if(self.flightPlan.flightPlanModel) self.flightPlan.flightPlanModel.chartData(fp.flightPlanData[self.sceneIndex()]);
+            self.sceneChange = ko.computed(function () {
+                if (self.risk.riskModel) self.risk.riskModel.chartData(fp.riskData[self.sceneIndex()]);
+                if (self.flightPlan.flightPlanModel) self.flightPlan.flightPlanModel.chartData(fp.flightPlanData[self.sceneIndex()]);
             }, this);
 
-            self.controlPanel = ko.computed(function() {
+            self.assetAlloccationChanged = function() {
+                var uiAA = {
+                    equities: self.controlPanel.controlPanelModel.equities(),
+                    gilts: self.controlPanel.controlPanelModel.gilts(),
+                    swaps: self.controlPanel.controlPanelModel.swaps(),
+                    volControlledEquities: self.controlPanel.controlPanelModel.volControlledEquities()
+                }
+
+                //var index = _.indexOf(fp.controlPanelData, uiAA);
+                //if (index > -1){
+                //                    self.sceneIndex(index);
+                //}
+                //underscore doesn't do a deep compare in indexOf, so interation
+                for (i = 0; i < fp.controlPanelData.length; i++) {
+                    if (_.isEqual(fp.controlPanelData[i], uiAA)){
+                        self.sceneIndex(i);
+                    }
+                }
+            };
+
+            self.controlPanel = {
+               controlPanelModel: new fp.ControlPanelModel({
+                   startingEquities: fp.controlPanelData[0].equities,
+                   startingGilts: fp.controlPanelData[0].gilts,
+                   startingSwaps: fp.controlPanelData[0].swaps,
+                   startingVolControlledEquities: fp.controlPanelData[0].volControlledEquities,
+                   assetAllocationChangedCallback: self.assetAlloccationChanged
+               })
+            };
+            /*self.controlPanel = ko.computed(function() {
                 return fp.controlPanelData[self.sceneIndex()];
-            });
+            });*/
+
 
             self.prmf = ko.computed(function(){
                 return fp.prmf[self.sceneIndex()];
