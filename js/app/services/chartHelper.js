@@ -95,8 +95,7 @@ var irisHighChartWrapper = function() {
             }]
         };
 
-        $("#riskChart").highcharts(settings);
-        return settings;
+        return $("#riskChart").highcharts(settings).highcharts();
     };
 
     var columnChart = function (options) {
