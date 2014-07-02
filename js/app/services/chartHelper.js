@@ -451,7 +451,8 @@ var irisHighChartWrapper = function() {
                 gridLineDashStyle: 'dash'
             },
             tooltip: {
-                xDateFormat: '%Y'
+                xDateFormat: '%Y',
+                pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: <b>{point.y}</b><br/>'
             },
             legend: {
                 enabled: true,
