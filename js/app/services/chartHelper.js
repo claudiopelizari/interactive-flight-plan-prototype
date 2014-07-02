@@ -7,10 +7,12 @@ var irisHighChartWrapper = function() {
 
     var waterFall = function(options) {
         var settings = {
+            chart: {
+                events: options.chartEvents || {}
+            },
             title: {
                 text: ''
             },
-
             xAxis: {
                 type: 'category',
                 title: {
@@ -429,7 +431,8 @@ var irisHighChartWrapper = function() {
         var settings = {
             chart: {
                 renderTo: options.renderTo,
-                type: 'line'
+                type: 'line',
+                events: options.chartEvents || {}
             },
             credits: {
                 enabled: false

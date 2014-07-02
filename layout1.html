@@ -207,7 +207,7 @@
                     </header>
                     <div class="content">
                         <div class="new-settings-box">
-                            <div id="new-risk-settings-toggle" class="container-fluid new-settings-box-content">
+                            <div class="container-fluid new-settings-box-content">
                                 <div id="new-risk-settings-collapsible" class="row collapse in">
                                     <div class="new-settings-box-item">
                                         <span>Basis Risk:</span>
@@ -234,7 +234,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row" id="new-risk-settings-toggle">
                                     <div class="new-settings-toggle">
                                         <span class="settings-helper-text"><i class="glyphicon glyphicon-cog"></i> &nbsp;&nbsp;click to change settings</span>
                                     </div>
@@ -296,7 +296,7 @@
                     </header>
                     <div class="content">
                         <div class="new-settings-box">
-                            <div id="new-flightplan-settings-toggle" class="container-fluid new-settings-box-content">
+                            <div class="container-fluid new-settings-box-content">
                                 <div id="new-flightplan-settings-collapsible" class="row collapse in">
                                     <div class="new-settings-box-item">
                                         <span>Target funding year:</span>
@@ -332,7 +332,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row" id="new-flightplan-settings-toggle">
                                     <div class="new-settings-toggle">
                                         <span class="settings-helper-text"><i class="glyphicon glyphicon-cog"></i> &nbsp;&nbsp;click to change settings</span>
                                     </div>
@@ -412,7 +412,9 @@
 
     <script>
 
-
+    function hideAllCollapsibles() {
+        $('.collapse').collapse('hide');
+    }
 
     $(function (){
        //attach  click handler to collapsible settings panels
@@ -433,6 +435,8 @@
         //hide the settings panels
         $('#new-risk-settings-collapsible').collapse('hide');
         $('#new-flightplan-settings-collapsible').collapse('hide');
+
+        $(document).on('click', hideAllCollapsibles);
     });
 
     $(function () {
@@ -517,6 +521,10 @@
             var renderedChart;
             var yAxisMinRange = 0;
 
+            var hideCollapsibleFunction;
+
+            if (!dependencies) dependencies = {};
+
             self.colours = ["#bdea74", "#eae874", "#2FABE9", "#FA5833"];
             self.chartData = ko.observableArray([]);
             self.riskTableOriginal = ko.observableArray([]);
@@ -539,8 +547,8 @@
                 self.basisRisk(false);
             };
 
-            if (!dependencies) dependencies = {};
             self.chartWrapper = dependencies.chartWrapper || new irisHighChartWrapper();
+            hideCollapsibleFunction = dependencies.hideCollapsibleFunction;
 
             self.reset = function () {
                 //reset basis risk to true
@@ -639,7 +647,13 @@
                         xAxisRotation: -45,
                         yAxisMin: 0,
                         yAxisMinRange: yAxisMinRange,
-                        dataLabels: true
+                        dataLabels: true,
+                        chartEvents: {
+                            click: function(event) {
+                                if (hideCollapsibleFunction) hideCollapsibleFunction();
+                            }
+                        }
+
                     };
 
                     renderedChart = self.chartWrapper.displayWaterfallChart(options);
@@ -654,15 +668,14 @@
             var self = this;
 
             var startTargetFundingYear = 2030;
+            var hideCollapsibleFunction;
 
             if (!dependencies) dependencies = {};
+            hideCollapsibleFunction = dependencies.hideCollapsibleFunction;
             self.chartWrapper = dependencies.chartWrapper || new irisHighChartWrapper();
-
             self.chartData = ko.observableArray([]);
             self.targetFundingYear = ko.observable(startTargetFundingYear);
             self.targetFundingYears = ko.observableArray([2024,2025,2026,2027,2028,2029,2030,2031,2032,2033,2034,2035,2036,2037,2038]);
-
-
 
             var seriesData = [
                 { name: 'Liabilities', color: '#2FABE9', data: [], index: 2 },
@@ -675,7 +688,12 @@
                 lineSeriesData: seriesData,
                 yAxisTitle: "GBP Millions",
                 xAxisTitle: "Date",
-                dataLabels: true
+                dataLabels: true,
+                chartEvents: {
+                    click: function(event) {
+                        if (hideCollapsibleFunction) hideCollapsibleFunction();
+                    }
+                }
             };
 
             var renderedChart;
@@ -937,7 +955,6 @@
             ["30 June 2030",  "1774795214",  "1774795214",  "1774795214",  null]
         ]];
 
-
         fp.ViewModel = function(){
             var self = this;
 
@@ -952,11 +969,11 @@
             };
 
             self.risk = {
-                riskModel : new fp.RiskModel(new irisHighChartWrapper())
+                riskModel : new fp.RiskModel({ chartWrapper: new irisHighChartWrapper(), hideCollapsibleFunction: hideAllCollapsibles })
             };
 
             self.flightPlan = {
-                flightPlanModel: new fp.FlightPlanModel({ chartWrapper: new irisHighChartWrapper() })
+                flightPlanModel: new fp.FlightPlanModel({ chartWrapper: new irisHighChartWrapper(), hideCollapsibleFunction: hideAllCollapsibles })
             };
 
             self.sceneChange = ko.computed(function(){

@@ -171,6 +171,7 @@
 
 .maincontent {
     background-image: linear-gradient(#fefefe 2em, #e7e7e8);
+    overflow: hidden;
 }
 
 .panel-body .asset-group:first-child {
