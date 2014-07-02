@@ -514,6 +514,8 @@
 
         fp.RiskModel = function (dependencies) {
             var self = this;
+            var renderedChart;
+            var yAxisMinRange = 0;
 
             self.colours = ["#bdea74", "#eae874", "#2FABE9", "#FA5833"];
             self.chartData = ko.observableArray([]);
@@ -582,6 +584,7 @@
                         } else {
                             //result.push({ name: data[0], y: parseFloat(y.toFixed(2)), color: colours[colourIndex] });
                             result.push({ name: data[0], y: parseFloat(y.toFixed(2)) });
+                            yAxisMinRange += parseFloat(y.toFixed(2));
                         }
                     }
                 });
@@ -622,8 +625,6 @@
                 return result;
             });
 
-            var renderedChart;
-
             self.displayChart = ko.computed(function () {
                 if (self.waterfallData().length === 0) return;
                 if (self.totalSeriesData().length === 0) return;
@@ -636,6 +637,8 @@
                         yAxisTitle: self.chartYAxisTitle(),
                         xAxisTitle: "Risk Type",
                         xAxisRotation: -45,
+                        yAxisMin: 0,
+                        yAxisMinRange: yAxisMinRange,
                         dataLabels: true
                     };
 
@@ -751,40 +754,57 @@
         };
 
         fp.prmf = [
-                {
-                    required : "100 bps",
-                    expected : "210 bps",
-                    risk : "FRAR 18%",
-                    targetrisk : "Target 12%",
-                    hedge : "25%",
-                    fr : "70%",
-                    collateral : "£300M",
-                    fptitle : "Flight Plan",
-                    rbtitle : "Risk Budget",
-                    hrtitle : "Hedge Ratio",
-                    cttitle : "Collateral",
-                    fptmpl : "m-green",
-                    rbtmpl : "m-red",
-                    hrtmpl : "m-red",
-                    cttmpl : "m-green"
-                }
-            ,
-                {
-                    required : "70 bps",
-                    expected : "146 bps",
-                    risk : "RAR 4%",
-                    hedge : "90%",
-                    fr : "84%",
-                    fptitle : "Flight Plan",
-                    rbtitle : "Risk Budget",
-                    hrtitle : "Hedge Ratio",
-                    cttitle : "Collateral",
-                    collateral : "£514M",
-                    fptmpl : "m-amber",
-                    rbtmpl : "m-amber",
-                    hrtmpl : "m-green",
-                    cttmpl : "m-green"
-                }
+            {
+                required : "100 bps",
+                expected : "210 bps",
+                risk : "FRAR 18%",
+                targetrisk : "Target 12%",
+                hedge : "25%",
+                fr : "70%",
+                collateral : "£300M",
+                fptitle : "Flight Plan",
+                rbtitle : "Risk Budget",
+                hrtitle : "Hedge Ratio",
+                cttitle : "Collateral",
+                fptmpl : "m-green",
+                rbtmpl : "m-red",
+                hrtmpl : "m-red",
+                cttmpl : "m-green"
+            },
+            {
+                required : "100 bps",
+                expected : "210 bps",
+                risk : "RAR 13%",
+                targetrisk : "Target 12%",
+                hedge : "50%",
+                fr : "70%",
+                collateral : "£50M",
+                fptitle : "Flight Plan",
+                rbtitle : "Risk Budget",
+                hrtitle : "Hedge Ratio",
+                cttitle : "Collateral",
+                fptmpl : "m-green",
+                rbtmpl : "m-amber",
+                hrtmpl : "m-red",
+                cttmpl : "m-green"
+            },
+            {
+                required : "100 bps",
+                expected : "180 bps",
+                risk : "RAR 4%",
+                targetrisk : "Target 12%",
+                hedge : "60%",
+                fr : "70%",
+                collateral : "£150M",
+                fptitle : "Flight Plan",
+                rbtitle : "Risk Budget",
+                hrtitle : "Hedge Ratio",
+                cttitle : "Collateral",
+                fptmpl : "m-green",
+                rbtmpl : "m-amber",
+                hrtmpl : "m-red",
+                cttmpl : "m-green"
+            }
         ];
 
         fp.controlPanelData = [
@@ -800,6 +820,13 @@
                 gilts: 30,
                 swaps: 30,
                 volControlledEquities: 0,
+                totalAssets: 130
+            },
+            {
+                equities: 0,
+                gilts: 40,
+                swaps: 30,
+                volControlledEquities: 60,
                 totalAssets: 130
             }
         ];
@@ -830,6 +857,19 @@
             ["31 January 2014", "Inflation Basis Risk", "0", "Basis Risk", null],
             ["31 January 2014", "Diversification", "0.047021", "Diversification", null],
             ["31 January 2014", "Total", "0.12040", "Total", null]
+        ],[
+            ["Date", "Risk Type", "Percentage of Total Liabilities", "Category", null],
+            ["31 January 2014", "Equity Risk", "0.04001", "Asset Risk", null],
+            ["31 January 2014", "Alternative Risk", "0", "Asset Risk", null],
+            ["31 January 2014", "FX Risk", "0", "Asset Risk", null],
+            ["31 January 2014", "Credit Risk", "0", "Asset Risk", null],
+            ["31 January 2014", "Insurance Risk", "0", "Asset Risk", null],
+            ["31 January 2014", "Interest Rate Risk", "0.04002", "Liability Risk", null],
+            ["31 January 2014", "Inflation Risk", "0.02710", "Liability Risk", null],
+            ["31 January 2014", "Interest Rate Basis Risk", "0", "Basis Risk", null],
+            ["31 January 2014", "Inflation Basis Risk", "0", "Basis Risk", null],
+            ["31 January 2014", "Diversification", "0.027021", "Diversification", null],
+            ["31 January 2014", "Total", "0.08040", "Total", null]
         ]];
 
         fp.flightPlanData = [[
@@ -853,8 +893,28 @@
             ["30 June 2028",  "1749060877",  "1807627789",  "1807627789",  null],
             ["30 June 2029",  "1762273714",  "1792263917",  "1792263917",  null],
             ["30 June 2030",  "1774795214",  "1774795214",  "1774795214",  null]
-
-        ], [
+        ],[
+            ["Date",  "GF Asset (Gilts +177bps)",  "GF Liability (Gilt flat)",  "GF Expected Asset (Gilts +177bps)",  null],
+            ["28 June 2013",  "1419816589",  "1824449370", "1419816589",  null],
+            ["30 September 2013",  "1416916182",  "1818554559", "1419750014",  null],
+            ["30 June 2014",  "1412647751",  "1793890195", "1418303993",  null],
+            ["30 June 2015",  "1417703004",  "1769838176", "1426226246",  null],
+            ["30 June 2016",  "1429176417",  "1754250356", "1440644174",  null],
+            ["30 June 2017",  "1453465547",  "1754488164", "1468058457",  null],
+            ["30 June 2018",  "1482378990",  "1759952119", "1500256718",  null],
+            ["30 June 2019",  "1513284499",  "1767020958", "1534598022",  null],
+            ["30 June 2020",  "1542372293",  "1778332423", "1567223688",  null],
+            ["30 June 2021",  "1578037371",  "1796684312", "1606670345",  null],
+            ["30 June 2022",  "1619577242",  "1820908259", "1652261871",  null],
+            ["30 June 2023",  "1659350486",  "1841652201", "1696223453",  null],
+            ["30 June 2024",  "1682379988",  "1842430887", "1723204230",  null],
+            ["30 June 2025",  "1699311422",  "1835617536", "1744027612",  null],
+            ["30 June 2026",  "1715221123",  "1826781602", "1763876677",  null],
+            ["30 June 2027",  "1732560717",  "1818281248", "1785271559",  null],
+            ["30 June 2028",  "1749060877",  "1807627789",  "1807627789",  null],
+            ["30 June 2029",  "1762273714",  "1792263917",  "1792263917",  null],
+            ["30 June 2030",  "1774795214",  "1774795214",  "1774795214",  null]
+        ],[
             ["Date",  "GF Asset (Gilts +177bps)",  "GF Liability (Gilt flat)",  "GF Expected Asset (Gilts +177bps)",  null],
             ["28 June 2013",  "1419816589",  "1824449370", "1419816589",  null],
             ["30 September 2013",  "1416916182",  "1818554559", "1419750014",  null],

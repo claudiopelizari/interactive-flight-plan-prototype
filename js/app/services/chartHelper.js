@@ -22,6 +22,8 @@ var irisHighChartWrapper = function() {
             },
 
             yAxis: [{
+                min: options.yAxisMin || 0,
+                minRange: options.yAxisMinRange || 0,
                 title: {
                     text: options.yAxisTitle || ""
                 },
