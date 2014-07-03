@@ -42,7 +42,12 @@
 <body class="white maincontent">
 
     <div class="container-fluid header-bar">
-        <h3>Redington <i class="glyphicon glyphicon-chevron-right"></i> Interactive Flight Plan</h3>
+        <div>
+            <h3>Redington <i class="glyphicon glyphicon-chevron-right"></i> Interactive Flight Plan</h3>
+        </div>
+        <div class="reset-flight-plan pull-right" data-bind="click: reset">
+            <span><i class="glyphicon glyphicon-repeat"></i> Reset</span>
+        </div>
     </div>
 
     <div class="cf-container cf-nav-active">
@@ -432,7 +437,6 @@
     <script src="js/knockout-min.js"></script>
     <script src="js/app/services/chartHelper.js"></script>
 
-
     <script>
 
     function hideAllCollapsibles() {
@@ -544,9 +548,16 @@
             var self = this;
             var renderedChart;
             var yAxisMinRange = 0;
+            var yAxisMinRangeSet = false;
 
             var hideCollapsibleFunction;
             var showDataFunction;
+
+            var assetRiskxAxisStart = 0;
+            var assetRiskSeriesCount = 0;
+            var liabilityRiskxAxisStart = 0;
+            var basisRiskxAxisStart = 0;
+            var diversificationxAxisStart = 0;
 
             if (!dependencies) dependencies = {};
 
@@ -579,7 +590,23 @@
             self.reset = function () {
                 //reset basis risk to true
                 self.basisRisk(true);
+                renderedChart = undefined;
             };
+
+            var riskTypeColor = function(riskType) {
+                switch (riskType){
+                    case 'Asset Risk':
+                        return '#CA2F2F';
+                    case 'Liability Risk':
+                        return '#3FAEF8';
+                    case 'Basis Risk':
+                        return '#E9D65A';
+                    case 'Diversification':
+                        return '#858B8C';
+                    case 'Total':
+                        return '#158141';
+                }
+            }
 
             self.waterfallData = ko.computed(function () {
                 //var colours = ["#D94542", "#578BCA", "#819E43", "#B0C9F5", "#9EDAEB"];
@@ -604,21 +631,23 @@
                     }
 
                     if (data[0] !== null && diversificationFound === false && pushData) {
+
                         if (data[2] !== currentCategory) {
                             colourIndex += 1;
                             currentCategory = data[2];
                         }
+                        var seriesColour = riskTypeColor(data[2]);
                         var y = parseFloat(data[1]);
                         y *= 100;
                         if (data[0] === "Diversification") {
                             diversificationFound = true;
                             var y1 = parseFloat(y.toFixed(1)) - (parseFloat(y.toFixed(2)) * 2);
                             //result.push({ name: data[0], y: y1, color: colours[colourIndex] });
-                            result.push({ name: data[0], y: y1 });
+                            result.push({ name: data[0], y: y1, color: seriesColour });
                         } else {
                             //result.push({ name: data[0], y: parseFloat(y.toFixed(2)), color: colours[colourIndex] });
-                            result.push({ name: data[0], y: parseFloat(y.toFixed(2)) });
-                            yAxisMinRange += parseFloat(y.toFixed(2));
+                            result.push({ name: data[0], y: parseFloat(y.toFixed(2)), color: seriesColour });
+                            if (!yAxisMinRangeSet) yAxisMinRange += parseFloat(y.toFixed(2));
                         }
                     }
                 });
@@ -649,9 +678,10 @@
                         if (data[0] !== "Total" && data[0] !== null) {
                             result.push({ y: 0 });
                         } else if (data[0] === "Total") {
+                            var seriesColour = riskTypeColor(data[2]);
                             var y = parseFloat(data[1]);
                             y *= 100;
-                            result.push({ y: y });
+                            result.push({ y: y, color: seriesColour });
                         }
                     }
                 });
@@ -675,9 +705,9 @@
                             dblclick: showDataFunction
                         },
 //                        xAxisPlotBands: [{
-//                            color: '#E7F5FF',
+//                            color: '#D5B5AE',
 //                            from: -0.5,
-//                            to: 3.5
+//                            to: 4.5
 //                        }],
                         yAxisMin: 0,
                         yAxisMinRange: yAxisMinRange,
@@ -686,7 +716,7 @@
                               click: hideCollapsibleFunction
                         }
                     };
-
+                    yAxisMinRangeSet = true;
                     renderedChart = self.chartWrapper.displayWaterfallChart(options);
                 }else{
                     renderedChart.series[0].setData(self.waterfallData());
@@ -1092,8 +1122,8 @@
             }, this);
 
             self.reset = function(){
-                if (confirm("Reset the flight plan?")) {
-                    //self.controlPanel.controlPanelModel.reset();
+                if (confirm("Reset to original state?")) {
+                    self.controlPanel.controlPanelModel.reset();
                     self.risk.riskModel.reset();
                     self.sceneIndex(0);
                 }
@@ -1105,7 +1135,6 @@
         window.addEventListener('shake', vm.reset, false);
 
         ko.applyBindings(vm);
-
 
     </script>
 

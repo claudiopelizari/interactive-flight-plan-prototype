@@ -120,7 +120,7 @@
 }
 
 .header-bar h3{
-    width: 100%;
+    /*width: 100%;*/
     text-align: center;
     margin: 0px;
     font-weight: bold;
@@ -207,4 +207,21 @@
     font-size: 11px;
     cursor: pointer;
 }
+
+.reset-flight-plan {
+    margin-top: -30px;
+    cursor: pointer;
+    visibility: hidden;
+}
+
+.header-bar:hover .reset-flight-plan {
+    visibility: visible;
+}
+
+.reset-flight-plan:hover {
+    color: #2FABE9;
+    background-color: #CA2F2F;
+}
+
+
 
