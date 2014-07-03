@@ -40,7 +40,8 @@ var irisHighChartWrapper = function() {
             plotOptions: {
                 series: {
                     shadow: false,
-                    borderWidth: 0
+                    borderWidth: 0,
+                    events: options.xAxisLabelEvents || {}
                 }
             },
 
