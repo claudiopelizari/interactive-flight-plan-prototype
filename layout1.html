@@ -11,7 +11,7 @@
     <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/controlfrog.css" rel="stylesheet" media="screen">
 	<link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
-	
+
 	<script src="//code.jquery.com/jquery-1.9.1.min.js"></script>    
 	<script src="js/moment.js"></script>	
 	<script src="js/easypiechart.js"></script>
@@ -72,7 +72,7 @@
                                                 <input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.equities, step: 10, max: 100 }" />
                                             </div>
                                             <div class="col-xs-1">
-                                                <span data-bind="text: controlPanel.controlPanelModel.equities"></span>
+                                                <span data-bind="animateText: controlPanel.controlPanelModel.equities"></span>
                                             </div>
                                         </div>
                                         <div class="asset-group-item row">
@@ -81,7 +81,7 @@
                                                 <input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.gilts, step: 10, max: 100 }" />
                                             </div>
                                             <div class="col-xs-1">
-                                                <span data-bind="text: controlPanel.controlPanelModel.gilts"></span>
+                                                <span data-bind="animateText: controlPanel.controlPanelModel.gilts"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -97,7 +97,7 @@
                                                 <input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.swaps, step: 10, max: 100 }" />
                                             </div>
                                             <div class="col-xs-1">
-                                                <span data-bind="text: controlPanel.controlPanelModel.swaps"></span>
+                                                <span data-bind="animateText: controlPanel.controlPanelModel.swaps"></span>
                                             </div>
                                         </div>
                                         <div class="asset-group-item row">
@@ -106,7 +106,7 @@
                                                 <input type="text" data-bind="sliderValue: { value: controlPanel.controlPanelModel.volControlledEquities, step: 10, max: 100 }" />
                                             </div>
                                             <div class="col-xs-1">
-                                                <span data-bind="text: controlPanel.controlPanelModel.volControlledEquities"></span>
+                                                <span data-bind="animateText: controlPanel.controlPanelModel.volControlledEquities"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -119,7 +119,7 @@
                                         <div class="asset-group-item row">
                                             <div class="col-xs-11"></div>
                                             <div class="col-xs-1">
-                                                <span data-bind="text: controlPanel.controlPanelModel.totalAssets"></span>
+                                                <span class="asset-total-sum" data-bind="animateText: controlPanel.controlPanelModel.totalAssets"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -144,8 +144,8 @@
                             <tr>
                                 <th class="cf-txts-txt" data-bind="css: prmf().fptmpl">Flight Plan</th>
                                 <td class="prmf-value" data-bind="css: prmf().fptmpl">
-                                    Required Return: <span data-bind="text: prmf().required"></span><br/>
-                                    Expected Return: <span data-bind="text: prmf().expected"></span>
+                                    Required Return: <span data-bind="animateText: prmf().required"></span><br/>
+                                    Expected Return: <span data-bind="animateText: prmf().expected"></span>
                                 </td>
                                 <td class="cf-bars-bar  mb prmf-status">
 
@@ -158,8 +158,8 @@
                             <tr>
                                 <th class="cf-txts-txt"  data-bind="css: prmf().rbtmpl">Risk Budget</th>
                                 <td class="prmf-value"  data-bind="css: prmf().rbtmpl">
-                                    <span data-bind="text: prmf().risk"></span><br/>
-                                    <span data-bind="text: prmf().targetrisk"></span>
+                                    <span data-bind="animateText: prmf().risk"></span><br/>
+                                    <span data-bind="animateText: prmf().targetrisk"></span>
                                 </td>
                                 <td class="cf-bars-bar mb prmf-status">
                                     <!-- ko template: prmf().rbtmpl -->
@@ -170,8 +170,8 @@
                             <tr>
                                 <th class="cf-txts-txt"  data-bind="css: prmf().hrtmpl">Hedge Ratio</th>
                                 <td class="prmf-value"  data-bind="css: prmf().hrtmpl">
-                                    Hedge Ratio: <span data-bind="text: prmf().hedge"></span><br/>
-                                    Funding Ratio: <span data-bind="text: prmf().fr"></span>
+                                    Hedge Ratio: <span data-bind="animateText: prmf().hedge"></span><br/>
+                                    Funding Ratio: <span data-bind="animateText: prmf().fr"></span>
                                 </td>
                                 <td class="cf-bars-bar mb prmf-status">
 
@@ -185,7 +185,7 @@
                             <tr>
                                 <th class="cf-txts-txt"  data-bind="css: prmf().cttmpl">Collateral</th>
                                 <td class="prmf-value"  data-bind="css: prmf().cttmpl">
-                                    <span data-bind="text: prmf().collateral"></span>
+                                    <span data-bind="animateText: prmf().collateral"></span>
                                 </td>
                                 <td class="cf-bars-bar  mb prmf-status">
 
@@ -542,6 +542,14 @@
             }
         };
 
+    ko.bindingHandlers['animateText'] = {
+        'update': function (element, valueAccessor) {
+            $(element).hide();
+            ko.bindingHandlers.text.update(element, valueAccessor);
+            $(element).fadeIn('slow');
+        }
+    };
+
         var fp = fp || {};
 
         fp.RiskModel = function (dependencies) {
@@ -553,11 +561,10 @@
             var hideCollapsibleFunction;
             var showDataFunction;
 
-            var assetRiskxAxisStart = 0;
-            var assetRiskSeriesCount = 0;
-            var liabilityRiskxAxisStart = 0;
-            var basisRiskxAxisStart = 0;
-            var diversificationxAxisStart = 0;
+            var numberAssetRisks = 0;
+            var numberLiabilityRisks = 0;
+            var numberBasisRisks = 0;
+            var numberRisksSet = false;
 
             if (!dependencies) dependencies = {};
 
@@ -606,7 +613,18 @@
                     case 'Total':
                         return '#158141';
                 }
-            }
+            };
+
+            var incrementRiskTypeCounters = function(riskType) {
+                switch (riskType){
+                    case 'Asset Risk':
+                        numberAssetRisks += 1;
+                    case 'Liability Risk':
+                        numberLiabilityRisks += 1;
+                    case 'Basis Risk':
+                        numberBasisRisks += 1;
+                };
+            };
 
             self.waterfallData = ko.computed(function () {
                 //var colours = ["#D94542", "#578BCA", "#819E43", "#B0C9F5", "#9EDAEB"];
@@ -637,6 +655,8 @@
                             currentCategory = data[2];
                         }
                         var seriesColour = riskTypeColor(data[2]);
+                        if (!numberRisksSet) incrementRiskTypeCounters(data[2]);
+
                         var y = parseFloat(data[1]);
                         y *= 100;
                         if (data[0] === "Diversification") {
@@ -651,6 +671,8 @@
                         }
                     }
                 });
+
+                numberRisksSet = true;
 
                 //result.push({ name: 'Total', y: 0, color: colours[colourIndex += 1] });
                 result.push({ name: 'Total', y: 0 });
@@ -704,11 +726,18 @@
                         xAxisLabelEvents: {
                             dblclick: showDataFunction
                         },
-//                        xAxisPlotBands: [{
-//                            color: '#D5B5AE',
-//                            from: -0.5,
-//                            to: 4.5
-//                        }],
+                        xAxisPlotBands: [
+                            {
+                                color: '#F5E6DF',
+                                from: -0.5,
+                                to: numberAssetRisks - 0.5
+                            },
+                            {
+                                color: '#DDF1F8',
+                                from: numberAssetRisks - 0.5,
+                                to: numberLiabilityRisks - 0.5
+                            }
+                        ],
                         yAxisMin: 0,
                         yAxisMinRange: yAxisMinRange,
                         dataLabels: true,

@@ -212,15 +212,15 @@
     margin-top: -30px;
     cursor: pointer;
     visibility: hidden;
+    font-weight: bold;
 }
 
 .header-bar:hover .reset-flight-plan {
     visibility: visible;
 }
 
-.reset-flight-plan:hover {
-    color: #2FABE9;
+.asset-total-sum {
+    font-weight: bold;
 }
-
 
 
