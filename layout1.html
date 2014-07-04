@@ -1001,7 +1001,7 @@
                 targetrisk : "Target 12%",
                 hedge : "60%",
                 fr : "70%",
-                collateral : "£150M",
+                collateral : "£959M",
                 fptitle : "Flight Plan",
                 rbtitle : "Risk Budget",
                 hrtitle : "Hedge Ratio",
@@ -1018,7 +1018,7 @@
                 targetrisk : "Target 12%",
                 hedge : "50%",
                 fr : "70%",
-                collateral : "£50M",
+                collateral : "£1044M",
                 fptitle : "Flight Plan",
                 rbtitle : "Risk Budget",
                 hrtitle : "Hedge Ratio",
@@ -1033,16 +1033,16 @@
                 expected : "0 bps",
                 risk : "FRAR 5%",
                 targetrisk : "Target 12%",
-                hedge : "50%",
+                hedge : "60%",
                 fr : "70%",
-                collateral : "£50M",
+                collateral : "£1044M",
                 fptitle : "Flight Plan",
                 rbtitle : "Risk Budget",
                 hrtitle : "Hedge Ratio",
                 cttitle : "Collateral",
                 fptmpl : "m-red",
                 rbtmpl : "m-amber",
-                hrtmpl : "m-red",
+                hrtmpl : "m-amber",
                 cttmpl : "m-green"
             }
         ];
@@ -1119,6 +1119,19 @@
             ["39 January 2014", "Inflation Basis Risk", "0", "0", "0", "0", "Basis Risk",  null],
             ["40 January 2014", "Diversification", "0.027021", "0.02566995", "0.0243189", "0.02296785", "Diversification",  null],
             ["41 January 2014", "Total", "0.0804", "0.07638", "0.07236", "0.06834", "Total",  null]
+        ],[
+            ["Date", "Risk Type", "Percentage of Total Liabilities", "RAR", "VAR", "CAR", "Category",  null],
+            ["31 January 2014", "Equity Risk", "0", "0", "0", "0", "Asset Risk",  null],
+            ["32 January 2014", "Alternative Risk", "0", "0", "0", "0", "Asset Risk",  null],
+            ["33 January 2014", "FX Risk", "0", "0", "0", "0", "Asset Risk",  null],
+            ["34 January 2014", "Credit Risk", "0", "0", "0", "0", "Asset Risk",  null],
+            ["35 January 2014", "Insurance Risk", "0", "0", "0", "0", "Asset Risk",  null],
+            ["36 January 2014", "Interest Rate Risk", "0.04002", "0.038019", "0.036018", "0.034017", "Liability Risk",  null],
+            ["37 January 2014", "Inflation Risk", "0.0271", "0.025745", "0.02439", "0.023035", "Liability Risk",  null],
+            ["38 January 2014", "Interest Rate Basis Risk", "0", "0", "0", "0", "Basis Risk",  null],
+            ["39 January 2014", "Inflation Basis Risk", "0", "0", "0", "0", "Basis Risk",  null],
+            ["40 January 2014", "Diversification", "0.027021", "0.02566995", "0.0243189", "0.02296785", "Diversification",  null],
+            ["41 January 2014", "Total", "0.0504", "0.05", "0.05", "0.05", "Total",  null]
         ]];
 
         fp.flightPlanData = [[
@@ -1184,7 +1197,30 @@
             ["30 June 2028",  "1749060877",  "1807627789",  "1807627789",  null],
             ["30 June 2029",  "1762273714",  "1792263917",  "1792263917",  null],
             ["30 June 2030",  "1774795214",  "1774795214",  "1774795214",  null]
-        ]];
+        ],
+            [
+            ["Date",  "GF Asset (Gilts +177bps)",  "GF Liability (Gilt flat)",  "GF Expected Asset (Gilts +177bps)",  null],
+            ["28 June 2013",  "1419816589",  "1824449370", "1419816589",  null],
+            ["30 September 2013",  "1416916182",  "1818554559", "1421166931",  null],
+            ["30 June 2014",  "1412647751",  "1793890195", "1411136351",  null],
+            ["30 June 2015",  "1417703004",  "1769838176", "1410500647",  null],
+            ["30 June 2016",  "1429176417",  "1754250356", "1416403864",  null],
+            ["30 June 2017",  "1453465547",  "1754488164", "1425398735",  null],
+            ["30 June 2018",  "1482378990",  "1759952119", "1439262735",  null],
+            ["30 June 2019",  "1513284499",  "1767020958", "1465350919",  null],
+            ["30 June 2020",  "1542372293",  "1778332423", "1489780247",  null],
+            ["30 June 2021",  "1578037371",  "1796684312", "1511159259",  null],
+            ["30 June 2022",  "1619577242",  "1820908259", "1548825763",  null],
+            ["30 June 2023",  "1659350486",  "1841652201", "1594937867",  null],
+            ["30 June 2024",  "1682379988",  "1842430887", "1623955062",  null],
+            ["30 June 2025",  "1699311422",  "1835617536", "1636790705",  null],
+            ["30 June 2026",  "1715221123",  "1826781602", "1648682173",  null],
+            ["30 June 2027",  "1732560717",  "1818281248", "1652184696",  null],
+            ["30 June 2028",  "1749060877",  "1807627789",  "1667627789",  null],
+            ["30 June 2029",  "1762273714",  "1792263917",  "1672263917",  null],
+            ["30 June 2030",  "1774795214",  "1774795214",  "1674795214",  null]
+        ]
+        ];
 
         fp.ViewModel = function() {
             var self = this;
