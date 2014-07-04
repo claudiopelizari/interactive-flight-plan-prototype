@@ -224,17 +224,17 @@
                                     <div class="new-settings-box-item">
                                         <span>Risk:</span>
                                         <div class="btn-group btn-group-xs" data-toggle="buttons">
-                                            <label class="btn btn-info active">
-                                                <input type="radio" name="RAR" checked> fRAR
+                                            <label class="btn btn-info">
+                                                <input type="radio" name="RAR" value="FRAR" data-bind="bsChecked: risk.riskModel.riskLens" /> FRAR
                                             </label>
                                             <label class="btn btn-info">
-                                                <input type="radio" name="RAR"> RAR
+                                                <input type="radio" name="RAR" value="RAR" data-bind="bsChecked: risk.riskModel.riskLens" /> RAR
                                             </label>
                                             <label class="btn btn-info">
-                                                <input type="radio" name="RAR"> VAR
+                                                <input type="radio" name="RAR" value="VAR" data-bind="bsChecked: risk.riskModel.riskLens" /> VAR
                                             </label>
                                             <label class="btn btn-info">
-                                                <input type="radio" name="RAR"> CAR
+                                                <input type="radio" name="RAR" value="CAR" data-bind="bsChecked: risk.riskModel.riskLens" /> CAR
                                             </label>
                                         </div>
                                     </div>
@@ -548,6 +548,28 @@
         }
     };
 
+    ko.bindingHandlers.bsChecked = {
+        init: function (element, valueAccessor, allBindingsAccessor,
+                        viewModel, bindingContext) {
+            var value = valueAccessor();
+            var newValueAccessor = function () {
+                return {
+                    change: function () {
+                        value(element.value);
+                    }
+                }
+            };
+            ko.bindingHandlers.event.init(element, newValueAccessor,
+                    allBindingsAccessor, viewModel, bindingContext);
+        },
+        update: function (element, valueAccessor, allBindingsAccessor,
+                          viewModel, bindingContext) {
+            if ($(element).val() == ko.unwrap(valueAccessor())) {
+                $(element).closest('.btn').button('toggle');
+            }
+        }
+    }
+
         var fp = fp || {};
 
         fp.RiskModel = function (dependencies) {
@@ -571,6 +593,7 @@
             self.riskTableOriginal = ko.observableArray([]);
             self.chartYAxisTitle = ko.observable('Percentage of Total Liabilities');
             self.basisRisk = ko.observable(true);
+            self.riskLens = ko.observable('FRAR');
 
             self.options = {
                 skip: 1,
@@ -648,14 +671,29 @@
 
                     if (data[0] !== null && diversificationFound === false && pushData) {
 
-                        if (data[2] !== currentCategory) {
+                        if (data[5] !== currentCategory) {
                             colourIndex += 1;
-                            currentCategory = data[2];
+                            currentCategory = data[5];
                         }
-                        var seriesColour = riskTypeColor(data[2]);
-                        if (!numberRisksSet) incrementRiskTypeCounters(data[2]);
+                        var seriesColour = riskTypeColor(data[5]);
+                        if (!numberRisksSet) incrementRiskTypeCounters(data[5]);
 
-                        var y = parseFloat(data[1]);
+                        var y;
+                        switch (self.riskLens()){           // load data from column based on risk lens
+                            case 'FRAR':
+                                y = parseFloat(data[1]);
+                                break;
+                            case 'RAR':
+                                y = parseFloat(data[2]);
+                                break;
+                            case 'VAR':
+                                y = parseFloat(data[3]);
+                                break;
+                            case 'CAR':
+                                y = parseFloat(data[4]);
+                                break;
+                        };
+
                         y *= 100;
                         if (data[0] === "Diversification") {
                             diversificationFound = true;
@@ -698,8 +736,24 @@
                         if (data[0] !== "Total" && data[0] !== null) {
                             result.push({ y: 0 });
                         } else if (data[0] === "Total") {
-                            var seriesColour = riskTypeColor(data[2]);
-                            var y = parseFloat(data[1]);
+                            var seriesColour = riskTypeColor(data[5]);
+
+                            var y;
+                            switch (self.riskLens()){           // load data from column based on risk lens
+                                case 'FRAR':
+                                    y = parseFloat(data[1]);
+                                    break;
+                                case 'RAR':
+                                    y = parseFloat(data[2]);
+                                    break;
+                                case 'VAR':
+                                    y = parseFloat(data[3]);
+                                    break;
+                                case 'CAR':
+                                    y = parseFloat(data[4]);
+                                    break;
+                            };
+
                             y *= 100;
                             result.push({ y: y, color: seriesColour });
                         }
@@ -782,7 +836,7 @@
             self.chartWrapper = dependencies.chartWrapper || new irisHighChartWrapper();
             self.chartData = ko.observableArray([]);
             self.targetFundingYear = ko.observable(startTargetFundingYear);
-            self.targetFundingYears = ko.observableArray([2024,2025,2026,2027,2028,2029,2030,2031,2032,2033,2034,2035,2036,2037,2038]);
+            self.targetFundingYears = ko.observableArray([2024,2025,2026,2027,2028,2029,2030]);
 
             self.discountBasis = ko.observable('SelfSufficiency');
 
@@ -981,44 +1035,44 @@
         ];
 
         fp.riskData = [[
-            ["Date", "Risk Type", "Percentage of Total Liabilities", "Category", null],
-            ["31 January 2014", "Equity Risk", "0.07212", "Asset Risk", null],
-            ["31 January 2014", "Alternative Risk", "0", "Asset Risk", null],
-            ["31 January 2014", "FX Risk", "0", "Asset Risk", null],
-            ["31 January 2014", "Credit Risk", "0", "Asset Risk", null],
-            ["31 January 2014", "Insurance Risk", "0", "Asset Risk", null],
-            ["31 January 2014", "Interest Rate Risk", "0.10238", "Liability Risk", null],
-            ["31 January 2014", "Inflation Risk", "0.050321", "Liability Risk", null],
-            ["31 January 2014", "Interest Rate Basis Risk", "0", "Basis Risk", null],
-            ["31 January 2014", "Inflation Basis Risk", "0", "Basis Risk", null],
-            ["31 January 2014", "Diversification", "0.040021", "Diversification", null],
-            ["31 January 2014", "Total", "0.18020", "Total", null]
+            ["Date", "Risk Type", "Percentage of Total Liabilities", "RAR", "VAR", "CAR", "Category",  null],
+            ["31 January 2014", "Equity Risk", "0.07212", "0.068514", "0.064908", "0.061302", "Asset Risk",  null],
+            ["32 January 2014", "Alternative Risk", "0", "0", "0", "0", "Asset Risk",  null],
+            ["33 January 2014", "FX Risk", "0", "0", "0", "0", "Asset Risk",  null],
+            ["34 January 2014", "Credit Risk", "0", "0", "0", "0", "Asset Risk",  null],
+            ["35 January 2014", "Insurance Risk", "0", "0", "0", "0", "Asset Risk",  null],
+            ["36 January 2014", "Interest Rate Risk", "0.10238", "0.097261", "0.092142", "0.087023", "Liability Risk",  null],
+            ["37 January 2014", "Inflation Risk", "0.050321", "0.04780495", "0.0452889", "0.04277285", "Liability Risk",  null],
+            ["38 January 2014", "Interest Rate Basis Risk", "0", "0", "0", "0", "Basis Risk",  null],
+            ["39 January 2014", "Inflation Basis Risk", "0", "0", "0", "0", "Basis Risk",  null],
+            ["40 January 2014", "Diversification", "0.040021", "0.03801995", "0.0360189", "0.03401785", "Diversification",  null],
+            ["41 January 2014", "Total", "0.1802", "0.17119", "0.16218", "0.15317", "Total",  null]
         ],[
-            ["Date", "Risk Type", "Percentage of Total Liabilities", "Category", null],
-            ["31 January 2014", "Equity Risk", "0.07212", "Asset Risk", null],
-            ["31 January 2014", "Alternative Risk", "0", "Asset Risk", null],
-            ["31 January 2014", "FX Risk", "0", "Asset Risk", null],
-            ["31 January 2014", "Credit Risk", "0", "Asset Risk", null],
-            ["31 January 2014", "Insurance Risk", "0", "Asset Risk", null],
-            ["31 January 2014", "Interest Rate Risk", "0.06121", "Liability Risk", null],
-            ["31 January 2014", "Inflation Risk", "0.03710", "Liability Risk", null],
-            ["31 January 2014", "Interest Rate Basis Risk", "0", "Basis Risk", null],
-            ["31 January 2014", "Inflation Basis Risk", "0", "Basis Risk", null],
-            ["31 January 2014", "Diversification", "0.047021", "Diversification", null],
-            ["31 January 2014", "Total", "0.12040", "Total", null]
+            ["Date", "Risk Type", "Percentage of Total Liabilities", "RAR", "VAR", "CAR", "Category",  null],
+            ["31 January 2014", "Equity Risk", "0.07212", "0.068514", "0.064908", "0.061302", "Asset Risk",  null],
+            ["32 January 2014", "Alternative Risk", "0", "0", "0", "0", "Asset Risk",  null],
+            ["33 January 2014", "FX Risk", "0", "0", "0", "0", "Asset Risk",  null],
+            ["34 January 2014", "Credit Risk", "0", "0", "0", "0", "Asset Risk",  null],
+            ["35 January 2014", "Insurance Risk", "0", "0", "0", "0", "Asset Risk",  null],
+            ["36 January 2014", "Interest Rate Risk", "0.06121", "0.0581495", "0.055089", "0.0520285", "Liability Risk",  null],
+            ["37 January 2014", "Inflation Risk", "0.0371", "0.035245", "0.03339", "0.031535", "Liability Risk",  null],
+            ["38 January 2014", "Interest Rate Basis Risk", "0", "0", "0", "0", "Basis Risk",  null],
+            ["39 January 2014", "Inflation Basis Risk", "0", "0", "0", "0", "Basis Risk",  null],
+            ["40 January 2014", "Diversification", "0.047021", "0.04466995", "0.0423189", "0.03996785", "Diversification",  null],
+            ["41 January 2014", "Total", "0.1204", "0.11438", "0.10836", "0.10234", "Total",  null]
         ],[
-            ["Date", "Risk Type", "Percentage of Total Liabilities", "Category", null],
-            ["31 January 2014", "Equity Risk", "0.04001", "Asset Risk", null],
-            ["31 January 2014", "Alternative Risk", "0", "Asset Risk", null],
-            ["31 January 2014", "FX Risk", "0", "Asset Risk", null],
-            ["31 January 2014", "Credit Risk", "0", "Asset Risk", null],
-            ["31 January 2014", "Insurance Risk", "0", "Asset Risk", null],
-            ["31 January 2014", "Interest Rate Risk", "0.04002", "Liability Risk", null],
-            ["31 January 2014", "Inflation Risk", "0.02710", "Liability Risk", null],
-            ["31 January 2014", "Interest Rate Basis Risk", "0", "Basis Risk", null],
-            ["31 January 2014", "Inflation Basis Risk", "0", "Basis Risk", null],
-            ["31 January 2014", "Diversification", "0.027021", "Diversification", null],
-            ["31 January 2014", "Total", "0.08040", "Total", null]
+            ["Date", "Risk Type", "Percentage of Total Liabilities", "RAR", "VAR", "CAR", "Category",  null],
+            ["31 January 2014", "Equity Risk", "0.04001", "0.0380095", "0.036009", "0.0340085", "Asset Risk",  null],
+            ["32 January 2014", "Alternative Risk", "0", "0", "0", "0", "Asset Risk",  null],
+            ["33 January 2014", "FX Risk", "0", "0", "0", "0", "Asset Risk",  null],
+            ["34 January 2014", "Credit Risk", "0", "0", "0", "0", "Asset Risk",  null],
+            ["35 January 2014", "Insurance Risk", "0", "0", "0", "0", "Asset Risk",  null],
+            ["36 January 2014", "Interest Rate Risk", "0.04002", "0.038019", "0.036018", "0.034017", "Liability Risk",  null],
+            ["37 January 2014", "Inflation Risk", "0.0271", "0.025745", "0.02439", "0.023035", "Liability Risk",  null],
+            ["38 January 2014", "Interest Rate Basis Risk", "0", "0", "0", "0", "Basis Risk",  null],
+            ["39 January 2014", "Inflation Basis Risk", "0", "0", "0", "0", "Basis Risk",  null],
+            ["40 January 2014", "Diversification", "0.027021", "0.02566995", "0.0243189", "0.02296785", "Diversification",  null],
+            ["41 January 2014", "Total", "0.0804", "0.07638", "0.07236", "0.06834", "Total",  null]
         ]];
 
         fp.flightPlanData = [[
