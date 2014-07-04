@@ -1108,8 +1108,8 @@
             };
 
             self.sceneChange = ko.computed(function () {
-                if (self.risk.riskModel) self.risk.riskModel.chartData(fp.riskData[self.sceneIndex()]);
-                if (self.flightPlan.flightPlanModel) self.flightPlan.flightPlanModel.chartData(fp.flightPlanData[self.sceneIndex()]);
+                if (self.risk.riskModel && fp.riskData[self.sceneIndex()] != undefined) self.risk.riskModel.chartData(fp.riskData[self.sceneIndex()]);
+                if (self.flightPlan.flightPlanModel && fp.flightPlanData[self.sceneIndex()] != undefined) self.flightPlan.flightPlanModel.chartData(fp.flightPlanData[self.sceneIndex()]);
             }, this);
 
             self.assetAlloccationChanged = function() {
@@ -1120,10 +1120,6 @@
                     volControlledEquities: self.controlPanel.controlPanelModel.volControlledEquities()
                 }
 
-                //var index = _.indexOf(fp.controlPanelData, uiAA);
-                //if (index > -1){
-                //                    self.sceneIndex(index);
-                //}
                 //underscore doesn't do a deep compare in indexOf, so interation
                 for (i = 0; i < fp.controlPanelData.length; i++) {
                     if (_.isEqual(fp.controlPanelData[i], uiAA)){
